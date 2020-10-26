@@ -189,7 +189,7 @@ namespace rola
 		void operator()(CallArgs&&... args) const;
 
 		template <typename ...CallArgs>
-		void emit(CallArgs&&... args) const;
+		void emit_(CallArgs&&... args) const;
 
 		template <typename Callback, typename ...CallArgs>
 		auto emit_handle_result(Callback&& cb, CallArgs&&... args) const;
@@ -309,7 +309,7 @@ namespace rola
 
 	template<typename R, typename ...Args>
 	template<typename ...CallArgs>
-	inline void Easy_signal<R(Args...)>::emit(CallArgs&& ...args) const
+	inline void Easy_signal<R(Args...)>::emit_(CallArgs&& ...args) const
 	{
 		operator()(std::forward<CallArgs>(args)...);
 	}
@@ -343,7 +343,7 @@ namespace rola
 	template<typename R2, typename Class, std::size_t ...Is>
 	inline Easy_connect<R(Args...)> Easy_signal<R(Args...)>::connect_pmf_(R2 Class::* pmf, Class& obj, detail::Indices<Is...>)
 	{
-		auto conn = Easy_connect<R(Args...)>(std::bind(pmf, obj, Place_holder<Is + 1>{}...), *this); // skip member function the first hide arg
+		auto conn = Easy_connect<R(Args...)>(std::bind(pmf, &obj, Place_holder<Is + 1>{}...), *this); // skip member function the first hide arg
 		slots_.push_back(conn);
 		return conn;
 	}

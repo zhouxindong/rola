@@ -106,5 +106,31 @@ int main()
 	conn1.reconnect();
 	sig(3.22);
 
+	std::cout << "press any key to signal connect to signal...\n";
+	std::cin.get();
+	rola::Easy_signal<std::string(double)> sigg;
+	sigg.connect(func);
+	sigg.connect(l);
+	sigg.connect(Bar());
+
+	rola::Easy_signal<std::string(double)> sigg2;
+	Bar b2;
+	sigg2.connect(&Bar::foo, b2);
+
+	sigg.connect(sigg2);
+	sigg(9.23);
+
+	std::cout << "press any key to handle the connect results";
+	std::cin.get();
+	rola::Easy_signal<int()> sig5;
+	sig5.connect(func2);
+	sig5.connect([]() {return 33; });
+	sig5.connect(Bar2());
+	Bar2 bb2;
+	sig5.connect(&Bar2::Foo2, bb2);
+	std::cout << sig5.emit_handle_result(sum_agg) << "\n";
+
+	std::cout << "\n--------easy_signal basic test successful---------\n";
+
 	return 0;
 }

@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include <iostream>
-int main()
+int main2()
 {
 	assert((std::is_base_of_v<
 		rola::detail::Indices<0, 1, 2>,
