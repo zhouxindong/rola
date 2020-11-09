@@ -46,6 +46,7 @@ public:
 
 	int Foo2() const
 	{
+		std::cout << "Bar2::Foo2\n";
 		return 21;
 	}
 };
@@ -55,8 +56,36 @@ int sum_agg(const std::vector<int>& v)
 	return std::accumulate(v.cbegin(), v.cend(), 0);
 }
 
-// basic test: connect, disconnect, reconnect
+class BBar2 : public Bar2
+{
+};
+
+class Bar3
+{
+public:
+	Bar3(rola::Easy_signal<int()>* sig)
+	{
+		sig->connect(&Bar3::Foo3, *this);
+	}
+
+private:
+	int Foo3()
+	{
+		return 999;
+	}
+};
+
 int main()
+{
+	rola::Easy_signal<int()> sig;
+
+	BBar2 b2;
+	sig.connect(&BBar2::Foo2, *(static_cast<Bar2*>(&b2)));
+	sig.emit_();
+}
+
+// basic test: connect, disconnect, reconnect
+int main3()
 {
 	rola::Easy_signal<std::string(double)> sig;
 	auto conn1 = sig.connect(func);
@@ -128,6 +157,7 @@ int main()
 	sig5.connect(Bar2());
 	Bar2 bb2;
 	sig5.connect(&Bar2::Foo2, bb2);
+	Bar3 bar3(&sig5);
 	std::cout << sig5.emit_handle_result(sum_agg) << "\n";
 
 	std::cout << "\n--------easy_signal basic test successful---------\n";

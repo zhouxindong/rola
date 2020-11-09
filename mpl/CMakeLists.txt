@@ -17,5 +17,6 @@ install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/mpl)
 
 # TODO: Add tests and install targets if needed.
 
+#need for static_assert()
 set_property(TARGET mpl PROPERTY CXX_STANDARD 17)
 set_property(TARGET mpl PROPERTY CXX_STANDARD_REQUIRED ON)

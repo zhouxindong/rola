@@ -7,6 +7,9 @@ set (SRC_FILES)
 set (HDR_FILES)
 set (HDR_FILES ${HDR_FILES} guid.hpp)
 set (SRC_FILES ${SRC_FILES} guid_main.cpp)
+set (HDR_FILES ${HDR_FILES} path.hpp)
+set (HDR_FILES ${HDR_FILES} resolver.hpp)
+set (SRC_FILES ${SRC_FILES} path_main.cpp)
 
 # Add source to this project's executable.
 add_executable (utils ${HDR_FILES} ${SRC_FILES})

@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-int main()
+int main2()
 {
 	std::vector<int> v{ 1,2,3,4,5,6 };
 	rola::stlex::erase_remove(v, [](int const& i) {

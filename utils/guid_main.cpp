@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-int main()
+int main2()
 {
 	std::cout << "len 24: " << rola::utils::guid_hex(24) << "\n";
 	std::cout << "len 16: " << rola::utils::guid_hex(16) << "\n";
