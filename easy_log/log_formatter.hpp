@@ -6,12 +6,6 @@
 
 namespace rola
 {
-	enum class LogFormatter
-	{
-		STD_FORMATTER,
-		TBL_FORMATTER,
-	};
-
 	template <typename LogItem>
 	class line_formatter
 	{
@@ -51,6 +45,43 @@ namespace rola
 			return oss.str();
 		}
 	};
+
+	template <typename LogItem>
+	class warn_detail_formatter
+	{
+	public:
+		typedef LogItem log_item_type;
+		typedef warn_detail_formatter<LogItem> type;
+
+		static std::string format(log_item_type const& item) noexcept
+		{
+			std::ostringstream oss;
+			if (static_cast<int>(item.level()) > static_cast<int>(rola::EasyLogLevel::EASY_LOG_INFO))
+			{
+				oss << item.time_stamp() << ' ';
+				oss << std::setw(5) << std::setfill(' ') << log_level_text(item.level()) << ' ';
+				oss << '[' << item.file() << "]@" << item.caller() << '#' << item.line() << ": ";
+			}
+			oss << item.message() << std::endl;
+			return oss.str();
+		}
+	};
+
+	template <typename LogItem>
+	class debug_formatter
+	{
+	public:
+		typedef LogItem log_item_type;
+		typedef debug_formatter<LogItem> type;
+
+		static std::string format(log_item_type const& item) noexcept
+		{
+			std::ostringstream oss;
+			oss << item.message() << ' ';
+			return oss.str();
+		}
+	};
+
 } // namespace rola
 
 #endif // !ROLA_EASY_LOG_LOG_FORMATTER_HPP

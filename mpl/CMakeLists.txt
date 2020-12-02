@@ -9,6 +9,11 @@ set (HDR_FILES ${HDR_FILES} easy_bind.hpp)
 set (SRC_FILES ${SRC_FILES} easy_bind_main.cpp)
 set (HDR_FILES ${HDR_FILES} type_list.hpp)
 set (SRC_FILES ${SRC_FILES} type_list_main.cpp)
+set (HDR_FILES ${HDR_FILES} value_list.hpp)
+set (SRC_FILES ${SRC_FILES} value_list_main.cpp)
+set (HDR_FILES ${HDR_FILES} "tuple.hpp")
+set (SRC_FILES ${SRC_FILES} "tuple_main.cpp")
+set (HDR_FILES ${HDR_FILES} "tuple2.hpp")
 
 # Add source to this project's executable.
 add_executable (mpl ${HDR_FILES} ${SRC_FILES})

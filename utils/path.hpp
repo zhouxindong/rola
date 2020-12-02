@@ -14,6 +14,7 @@
 #if defined(_WIN32)
 # include <windows.h>
 # include <ShlObj.h>
+#pragma comment(lib, "shell32.lib")
 #else
 # include <unistd.h>
 #endif
@@ -291,7 +292,8 @@ namespace rola
 #if !defined(_WIN32)
             return std::remove(str().c_str()) == 0;
 #else
-            return DeleteFileW(wstr().c_str()) != 0;
+            //return DeleteFileW(wstr().c_str()) != 0;
+            return DeleteFileA(str().c_str()) != 0;
 #endif
         }
 
@@ -405,7 +407,7 @@ namespace rola
 
             return tokens;
         }
-	};
+	}; // class path
 
     inline bool create_directory(const path& p) {
 #if defined(_WIN32)

@@ -31,6 +31,18 @@ namespace rola
 			long second;
 			long ms;
 		};
+
+		// return days since 1970-01-01
+		// negative values indicate days prior to 1970-01-01
+		inline constexpr int days_from_civil(int y, int m, int d) noexcept
+		{
+			y -= m <= 2;
+			const int era = (y >= 0 ? y : y - 399) / 400;
+			const unsigned yoe = static_cast<unsigned>(y - era * 400);				// [0, 399]
+			const unsigned doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;	// [0, 365]
+			const unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;				// [0, 146096]
+			return era * 146097 + (doe) - 719468;
+		}
 	} // namespace chrono
 
 	inline std::ostream& operator<<(std::ostream& s, chrono::HMS const& hms)
@@ -54,7 +66,7 @@ namespace rola
 	template <typename V, typename R>
 	inline std::ostream& operator<<(std::ostream& s, const std::chrono::duration<V, R>& d)
 	{
-		s << "[" << d.count() << " of " 
+		s << "[" << d.count() << " of "
 			<< R::num << "/"
 			<< R::den << "]";
 		return s;
@@ -65,7 +77,7 @@ namespace rola
 	{
 		std::chrono::system_clock::duration dt = tp.time_since_epoch();
 		return std::chrono::duration_cast<std::chrono::milliseconds>(dt);
-	}
+	}	
 
 	// split milliseconds to <hour, minute, second, millisecond>
 	inline rola::chrono::HMS split_hms(std::chrono::milliseconds ms)
@@ -88,7 +100,7 @@ namespace rola
 		return split_hms(val);
 	}
 
-	inline rola::chrono::YMDHMS 
+	inline rola::chrono::YMDHMS
 		split_ymdhms(std::chrono::system_clock::time_point const& tp)
 	{
 		rola::chrono::YMDHMS ymdhms;
@@ -101,19 +113,33 @@ namespace rola
 #else
 #error localtime() call failed
 #endif
-		ymdhms.year		= local_tm.tm_year + 1900;
-		ymdhms.month	= local_tm.tm_mon + 1;
-		ymdhms.day		= local_tm.tm_mday;
-		ymdhms.hour		= local_tm.tm_hour;
-		ymdhms.minute	= local_tm.tm_min;
-		ymdhms.second	= local_tm.tm_sec;
+		ymdhms.year = local_tm.tm_year + 1900;
+		ymdhms.month = local_tm.tm_mon + 1;
+		ymdhms.day = local_tm.tm_mday;
+		ymdhms.hour = local_tm.tm_hour;
+		ymdhms.minute = local_tm.tm_min;
+		ymdhms.second = local_tm.tm_sec;
 
 		auto dt = tp.time_since_epoch();
 		ymdhms.ms = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>
 			(dt % std::chrono::seconds(1)).count());
-		
+
 		return ymdhms;
 	}
+
+	//inline std::chrono::system_clock::time_point from_ymdhms(rola::chrono::YMDHMS const& sp)
+	//{
+	//	return std::chrono::system_clock::time_point(
+	//		rola::chrono::days(rola::chrono::days_from_civil(
+	//			sp.year,
+	//			sp.month,
+	//			sp.day)) +
+	//		std::chrono::hours(sp.hour) +
+	//		std::chrono::minutes(sp.minute) +
+	//		std::chrono::seconds(sp.second) +
+	//		std::chrono::milliseconds(sp.ms)
+	//	);
+	//}
 
 	inline std::ostream& operator<<(std::ostream& s, std::chrono::system_clock::time_point const& tp)
 	{

@@ -9,9 +9,12 @@ set (HDR_FILES ${HDR_FILES} container.hpp)
 set (SRC_FILES ${SRC_FILES} container_main.cpp)
 set (HDR_FILES ${HDR_FILES} "chrono_ex.hpp")
 set (SRC_FILES ${SRC_FILES} "chrono_ex_main.cpp")
+set (HDR_FILES ${HDR_FILES} "string.hpp")
+set (HDR_FILES ${HDR_FILES} "thread.hpp")
+set (SRC_FILES ${SRC_FILES} "thread_main.cpp")
 
 # Add source to this project's executable.
-add_executable (stlex ${HDR_FILES} ${SRC_FILES} )
+add_executable (stlex ${HDR_FILES} ${SRC_FILES})
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/stlex)
 

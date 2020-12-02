@@ -2,11 +2,12 @@
 #include <fstream>
 
 #include "resolver.hpp"
+#include "local_time.hpp"
 
 using namespace std;
 using namespace rola;
 
-int main()
+int main21()
 {
 #if !defined(WIN32)
 	path path1("/dir 1/dir 2/");
@@ -24,6 +25,8 @@ int main()
 	cout << "/parent.parent.parent:" << (path1 / path2).parent_path().parent_path().parent_path() << endl;
 	cout << "/parent.parent.parent.parent: " << (path1 / path2).parent_path().parent_path().parent_path().parent_path() << endl;
 
+    cout << "path(): " << path() << endl;
+    cout << "path().getcwd(): " << path().getcwd() << endl;
 	cout << "path().parent_path(): " << path().parent_path() << endl;
 	cout << "some/path.ext:operator==() = " << (path("some/path.ext") == path("some/path.ext")) << endl;
 	cout << "some/path.ext:operator==() (unequal) = " << (path("some/path.ext") == path("another/path.ext")) << endl;
@@ -71,5 +74,14 @@ int main22()
     path dir111("dir111");
     rola::create_directories(dir111);
 
+    return 0;
+}
+
+int main()
+{
+    auto p = path(".");
+    cout << p << endl;
+    cout << p.make_absolute() << endl;
+    cout << p.getcwd() << endl;
     return 0;
 }

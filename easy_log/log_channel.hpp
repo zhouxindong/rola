@@ -87,13 +87,6 @@ namespace rola
 		null_stream stream_;
 	};
 
-	//template <typename LogItem, typename LogFormatter>
-	//inline null_channel<LogItem, LogFormatter>& dummy_channel()
-	//{
-	//	static null_channel<LogItem, LogFormatter> cnl;
-	//	return cnl;
-	//}
-
 #pragma endregion
 
 #pragma region console_channel
@@ -314,12 +307,6 @@ namespace rola
 		out.log(item);
 		return out;
 	}
-
-	//template <typename LogItem, typename LogFormatter>
-	//null_channel<LogItem, LogFormatter>& operator<<(null_channel<LogItem, LogFormatter>& out, LogItem& item)
-	//{
-	//	return out;
-	//}
 
 } // namespace rola
 #endif // !ROLA_EASY_LOG_LOG_CHANNEL_HPP

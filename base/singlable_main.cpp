@@ -33,12 +33,12 @@ void thread_proc(Foo* f) // use reference assert is failed!
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }
-int main()
+int main_sm()
 {
 	Foo* f = Singlable<Foo>::instance_p(3, 2.33);
 
 	thread t(thread_proc, f);
-	for (int i = 0; i < 10000; ++i)
+	for (int i = 0; i < 1000; ++i)
 	{
 		Foo* f2 = Singlable<Foo>::instance_p(3, 99.23);
 		assert(f2 == f);

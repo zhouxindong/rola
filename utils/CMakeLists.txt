@@ -10,9 +10,15 @@ set (SRC_FILES ${SRC_FILES} guid_main.cpp)
 set (HDR_FILES ${HDR_FILES} path.hpp)
 set (HDR_FILES ${HDR_FILES} resolver.hpp)
 set (SRC_FILES ${SRC_FILES} path_main.cpp)
+set (HDR_FILES ${HDR_FILES} local_time.hpp)
 
 # Add source to this project's executable.
 add_executable (utils ${HDR_FILES} ${SRC_FILES})
+
+target_include_directories(
+	utils
+	PUBLIC
+	${CMAKE_SOURCE_DIR})
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/utils)
 
