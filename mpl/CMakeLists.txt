@@ -14,6 +14,11 @@ set (SRC_FILES ${SRC_FILES} value_list_main.cpp)
 set (HDR_FILES ${HDR_FILES} "tuple.hpp")
 set (SRC_FILES ${SRC_FILES} "tuple_main.cpp")
 set (HDR_FILES ${HDR_FILES} "tuple2.hpp")
+set (HDR_FILES ${HDR_FILES} "variant.hpp")
+set (HDR_FILES ${HDR_FILES} "function.hpp")
+set (SRC_FILES ${SRC_FILES} "function_main.cpp")
+set (HDR_FILES ${HDR_FILES} "any_value.hpp")
+set (SRC_FILES ${SRC_FILES} "any_value_main.cpp")
 
 # Add source to this project's executable.
 add_executable (mpl ${HDR_FILES} ${SRC_FILES})

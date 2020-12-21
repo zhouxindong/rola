@@ -19,6 +19,4 @@ target_include_directories(
 	PUBLIC
 	${CMAKE_SOURCE_DIR})
 
-install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/atm)
-
 # TODO: Add tests and install targets if needed.

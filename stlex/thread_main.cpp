@@ -1,5 +1,6 @@
 #include "thread.hpp"
 #include <cassert>
+#include <iostream>
 
 int foo(double d)
 {
@@ -10,7 +11,7 @@ void bar()
 {
 }
 
-int main()
+int main_tm()
 {
 	auto f = std::async(std::launch::async, foo, 3.23);
 	assert(!rola::stlex::is_defered(f));
@@ -23,5 +24,7 @@ int main()
 
 	auto f4 = std::async(std::launch::deferred, bar);
 	assert(rola::stlex::is_defered(f4));
+
+	std::cout << "thread_main.cpp successful\n";
 	return 0;
 }

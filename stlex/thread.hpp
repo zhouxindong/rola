@@ -63,7 +63,7 @@ namespace rola
 
 		private:
 			dtor_action action_;
-			std::thread t_; // always be the lastest! cecause thread after init would be start
+			std::thread t_; // always be the lastest! because thread after init would be start
 							// so let everything to be ready
 		};
 

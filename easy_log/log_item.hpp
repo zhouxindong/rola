@@ -8,7 +8,6 @@
 
 #include "stlex/chrono_ex.hpp"
 #include "log_level.hpp"
-//#include "log_formatter.hpp"
 
 namespace rola
 {
@@ -51,7 +50,9 @@ namespace rola
 			, line_(rhs.line_)
 			, time_stamp_(rhs.time_stamp_)
 			, stream_(rhs.stream_.str())
-		{}
+		{
+			stream_.seekp(0, std::ios_base::end);
+		}
 
 		log_item(log_item&& rhs) noexcept
 			: log_level_(rhs.log_level_)
@@ -60,12 +61,14 @@ namespace rola
 			, line_(rhs.line_)
 			, time_stamp_(std::move(rhs.time_stamp_))
 			, stream_(std::move(rhs.stream_))
-		{}
+		{
+		}
 
 		log_item& operator=(log_item const& rhs) noexcept
 		{
 			log_item temp = rhs;
 			swap(temp);
+			stream_.seekp(0, std::ios_base::end);
 			return *this;
 		}
 

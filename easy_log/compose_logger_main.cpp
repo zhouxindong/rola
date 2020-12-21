@@ -8,7 +8,7 @@
 using namespace std;
 using namespace rola;
 
-int main()
+int main_clm()
 {
 	using level_filter = level_filter<log_item, line_formatter<log_item>, rola::EasyLogLevel::EASY_LOG_TRACE>;
 	using base_logger_item = logger_item_base<log_item, line_formatter<log_item>>;

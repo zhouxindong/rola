@@ -128,6 +128,22 @@ void foo2()
 5. ++前置和后置版本，后置调用前置实现。
 */
 
+/*
+
+*/
+using FuncType = void(int);
+class Foo
+{
+public:
+	// void(Foo const&, int)
+	void operator()(int i) const // 使用时经常是传递一个类型的临时对象，而临时对象是const，如果operator()不声明为const, 则调用失败!
+	{
+
+	}
+	// void(FuncType*, int)
+	operator FuncType*() const
+	{}
+};
 #pragma endregion
 
 #pragma region template ctor and operator=

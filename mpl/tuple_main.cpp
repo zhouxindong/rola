@@ -3,7 +3,7 @@
 #include <cassert>
 #include <iostream>
 
-int main()
+int main_tm()
 {
 	// ctor
 	rola::mpl::Tuple<int, double, std::string> t(17, 3.14, "hello world");
@@ -31,6 +31,12 @@ int main()
 	assert(17 == rola::mpl::get<0>(t3));
 	assert(3.14 == rola::mpl::get<1>(t3));
 	assert(rola::mpl::get<2>(t3) == std::string("hello world"));
+
+	auto t4 = rola::mpl::make_tuple(0, '1', 2.2f, std::string{ "hello" });
+	assert((t4[rola::CT_value<unsigned, 0>{}] == 0));
+	assert((t4[rola::CT_value<unsigned, 1>{}] == '1'));
+	assert((t4[rola::CT_value<unsigned, 2>{}] == 2.2f));
+	assert((t4[rola::CT_value<unsigned, 3>{}] == std::string{ "hello" }));
 
 	std::cout << "tuple_main run successful\n";
 	return 0;

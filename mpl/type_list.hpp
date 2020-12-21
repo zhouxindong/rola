@@ -648,9 +648,7 @@ namespace rola
 		F<T> const& field(Apply<List, F> const& obj)
 		{
 			return obj;
-}
-
-
+		}
 
 #pragma endregion
 	} // namespace TL

@@ -12,6 +12,9 @@ set (SRC_FILES ${SRC_FILES} "chrono_ex_main.cpp")
 set (HDR_FILES ${HDR_FILES} "string.hpp")
 set (HDR_FILES ${HDR_FILES} "thread.hpp")
 set (SRC_FILES ${SRC_FILES} "thread_main.cpp")
+set (HDR_FILES ${HDR_FILES} "easy_range.hpp")
+set (HDR_FILES ${HDR_FILES} "rx_range.hpp")
+set (SRC_FILES ${SRC_FILES} "rx_range_main.cpp")
 
 # Add source to this project's executable.
 add_executable (stlex ${HDR_FILES} ${SRC_FILES})
@@ -19,3 +22,5 @@ add_executable (stlex ${HDR_FILES} ${SRC_FILES})
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/stlex)
 
 # TODO: Add tests and install targets if needed.
+set_property(TARGET stlex PROPERTY CXX_STANDARD 17)
+set_property(TARGET stlex PROPERTY CXX_STANDARD_REQUIRED ON)

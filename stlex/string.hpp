@@ -4,11 +4,14 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <sstream>
 
 namespace rola
 {
 	namespace stlex
 	{
+#pragma region string
+
 		inline std::vector<std::string> split(const std::string& text, const std::unordered_set<char>& tag)
 		{
 			std::vector<std::string> ret_vec;
@@ -38,6 +41,48 @@ namespace rola
 			return ret_vec;
 		}
 
+		inline bool is_not_space(char c)
+		{
+			return c != ' ';
+		}
+
+		inline std::string trim_left(std::string s)
+		{
+			s.erase(s.begin(),
+				std::find_if(s.begin(), s.end(), is_not_space));
+			return s;
+		}
+
+		inline std::string trim_right(std::string s)
+		{
+			s.erase(std::find_if(s.rbegin(), s.rend(), is_not_space).base(), s.end());
+			return s;
+		}
+
+		inline std::string trim(std::string s)
+		{
+			return trim_left(trim_right(std::move(s)));
+		}
+
+		template <typename T>
+		std::string to_string(T const& v)
+		{
+			std::ostringstream oss;
+			oss << v;
+			return oss.str();
+		}
+
+#pragma endregion
+
+#pragma region ostringstream
+
+		inline std::ostringstream& clear_content(std::ostringstream& oss)
+		{
+			oss.str("");
+			return oss;
+		}
+
+#pragma endregion
 	} // namespace stlex
 } // namespace rola
 

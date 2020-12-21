@@ -42,7 +42,7 @@ public:
 	}
 };
 
-int main()
+int main_pb()
 {
 	demo_class dc;
 	dc.set_version(99);

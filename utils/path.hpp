@@ -14,9 +14,11 @@
 #if defined(_WIN32)
 # include <windows.h>
 # include <ShlObj.h>
+#include <io.h>
 #pragma comment(lib, "shell32.lib")
 #else
 # include <unistd.h>
+#include <dirent.h>
 #endif
 #include <sys/stat.h>
 
@@ -436,6 +438,68 @@ namespace rola
         return false;
 #endif
     }
+
+    inline bool remove_directory(const path& p)
+    {
+        if (!p.exists()) return false;
+        if (!p.is_directory()) return false;
+
+#if defined(_WIN32)
+        return RemoveDirectoryW(p.wstr().c_str()) != 0;
+#else
+        return rmdir(p.str().c_str()) == 0;
+#endif
+    }
+
+    inline void remove_directories(const path& p)
+    {
+        if (!p.exists()) return;
+        if (!p.is_directory()) return;
+
+#if defined(_WIN32)
+        intptr_t h_file = 0;
+        _finddata_t fileinfo;
+        if ((h_file = _findfirst(p.str().append("\\*").c_str(), &fileinfo)) != -1)
+        {
+            do
+            {
+                if ((fileinfo.attrib & _A_SUBDIR))
+                {
+                    if (strcmp(fileinfo.name, ".") != 0 &&
+                        strcmp(fileinfo.name, "..") != 0)
+                        remove_directories(p / path(fileinfo.name));
+                }
+                else
+                {
+                    auto pfile = p / path(fileinfo.name);
+                    pfile.remove_file();
+                }
+            } while (_findnext(h_file, &fileinfo) == 0);
+            _findclose(h_file);
+            remove_directory(p);
+        }
+#else
+        dirent* dent;
+        DIR* dir;
+        dir = opendir(p.str().c_str());
+        while ((dent = readdir(dir)) != nullptr)
+        {
+            if (strcmp(dent->d_name, ".") == 0 ||
+                strcmp(dent->d_name, "..") == 0)
+                continue;
+
+            auto new_path = p / path(dent->d_name);
+            if (new_path.is_file())
+                new_path.remove_file();
+            else if (new_path.is_directory())
+                remove_directories(new_path);
+        }
+        closedir(dir);
+        remove_directory(p);
+
+#endif
+    }
+
 } // namespace rola
 
 #endif // !ROLA_UTILS_PATH_HPP
