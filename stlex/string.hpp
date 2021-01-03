@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_set>
 #include <sstream>
+#include <locale>
 
 namespace rola
 {
@@ -70,6 +71,19 @@ namespace rola
 			std::ostringstream oss;
 			oss << v;
 			return oss.str();
+		}
+
+		template <size_t N>
+		std::string frombytes(const char(&ary)[N])
+		{
+			std::vector<char> v;
+			for (int i = 0; i < N; ++i)
+			{
+				if (ary[i] != '\0')
+					v.push_back(ary[i]);
+			}
+
+			return std::string(v.begin(), v.end());
 		}
 
 #pragma endregion

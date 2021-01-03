@@ -77,7 +77,7 @@ int main22()
     return 0;
 }
 
-int main()
+int main222()
 {
     auto p = path(".");
     cout << p << endl;

@@ -11,7 +11,14 @@ set (HDR_FILES ${HDR_FILES} path.hpp)
 set (HDR_FILES ${HDR_FILES} resolver.hpp)
 set (SRC_FILES ${SRC_FILES} path_main.cpp)
 set (HDR_FILES ${HDR_FILES} local_time.hpp)
+set (HDR_FILES ${HDR_FILES} "tinyxml2.hpp")
+set (SRC_FILES ${SRC_FILES} "tinyxml2_main.cpp")
+set (HDR_FILES ${HDR_FILES} "json11.hpp")
+set (SRC_FILES ${SRC_FILES} "json11_main.cpp")
+set (HDR_FILES ${HDR_FILES} "easy_ini.hpp")
+set (SRC_FILES ${SRC_FILES} "easy_ini_main.cpp")
 
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 # Add source to this project's executable.
 add_executable (utils ${HDR_FILES} ${SRC_FILES})
 

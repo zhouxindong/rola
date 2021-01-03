@@ -3,8 +3,7 @@
 
 #include <chrono>
 #include "stlex/chrono_ex.hpp"
-namespace rola
-{
+
 #if defined (WIN32)
 #include <Windows.h>
 #pragma comment (lib, "advapi32.lib")
@@ -14,9 +13,12 @@ namespace rola
 #else
 #endif
 
+namespace rola
+{
 #if defined (WIN32)
-	inline bool adjust_local_time_win32(std::chrono::system_clock::time_point const& tp)
-	{
+
+    inline bool adjust_local_time_win32(std::chrono::system_clock::time_point const& tp)
+    {
         HANDLE token;
         if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,
             &token))
@@ -38,16 +40,16 @@ namespace rola
 
         GetLocalTime(&st);
         auto tps = split_ymdhms(tp);
-        st.wYear            = static_cast<WORD>(tps.year);
-        st.wMonth           = static_cast<WORD>(tps.month);
-        st.wDay             = static_cast<WORD>(tps.day);
-        st.wHour            = static_cast<WORD>(tps.hour);
-        st.wMinute          = static_cast<WORD>(tps.minute);
-        st.wSecond          = static_cast<WORD>(tps.second);
-        st.wMilliseconds    = static_cast<WORD>(tps.ms);
+        st.wYear = static_cast<WORD>(tps.year);
+        st.wMonth = static_cast<WORD>(tps.month);
+        st.wDay = static_cast<WORD>(tps.day);
+        st.wHour = static_cast<WORD>(tps.hour);
+        st.wMinute = static_cast<WORD>(tps.minute);
+        st.wSecond = static_cast<WORD>(tps.second);
+        st.wMilliseconds = static_cast<WORD>(tps.ms);
 
         return SetLocalTime(&st) != 0;
-	}
+    }
 
 #elif defined (unix)
     inline bool adjust_local_time_linux(std::chrono::system_clock::time_point const& tp)
