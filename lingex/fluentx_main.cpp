@@ -7,7 +7,7 @@
 using namespace rola;
 using namespace rola::Flux;
 
-int main_fluentx()
+int main()
 {
 	int i = 0;
 
@@ -95,6 +95,78 @@ int main_fluentx()
 	expected = 2;
 	If(true)->And(true).AndNot(true).OrNot(false).Xnor(true).Then([&]() { result = 2; });
 	assert(result == expected);
+
+	// While(cond, action)
+	result = 0;
+	While([&]() {return result != 6; }, [&]() {++result; });
+	assert(result == 6);
+
+	// While(cond)
+	result = 0;
+	auto sum = 0;
+	While([&]() {return ++result != 6; })->Do([&]() { sum += result; });
+	assert(15 == sum);
+
+#pragma region
+
+	// While-Do-LaterBreak
+	result = 0;
+	expected = 0;
+	While([&]() 
+		{
+		expected += 1;
+		return result < 6;
+		})
+		->
+			LaterBreak([&]() {return result == 4; })
+			.Do([&]() {result += 1; });
+	assert(4 == expected);
+
+	// While-EarlyBreak-Do
+	result = 0;
+	expected = 0;
+	While([&]()
+		{
+			expected += 1;
+			return result < 6;
+		})
+		->
+			EarlyBreak([&]() {return result == 4; })
+			.Do([&]() {result += 1; });
+	assert(5 == expected);
+
+	// While-Do-LaterContinue
+	result = 0;
+	expected = 0;
+	While([&]()
+		{
+			expected += 1;
+			return result < 6;
+		})
+		->
+			LaterContinue([&]() {return result == 4; })
+			.Do([&]() {result += 1; });
+	assert(7 == expected);
+
+	// While-EarlyContinue-Do
+	result = 0;
+	expected = 0;
+	While([&]()
+		{
+			expected += 1;
+			return result < 6 && expected < 100;
+		})
+		->
+			EarlyContinue([&]() { return result == 4; })
+			.Do([&]() {result += 1; });
+	assert(100 == expected);
+
+#pragma endregion
+
+	result = 0;
+	Do([&]() {++result; })
+		->While([&]() {return result < 5; });
+	assert(result == 5);
 
 	std::cout << "fluentx_main successful\n";
 	return 0;

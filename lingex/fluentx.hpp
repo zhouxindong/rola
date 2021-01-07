@@ -32,11 +32,6 @@ namespace rola
 			return std::make_shared<Loopable>(cond);
 		}
 
-		inline std::shared_ptr<Early_loop_builder> While(bool cond)
-		{
-			return std::make_shared<Loopable>(cond);
-		}
-
 		inline std::shared_ptr<Later_loop_builder> Do(std::function<void()> action)
 		{
 			return std::make_shared<Loopable>(action);

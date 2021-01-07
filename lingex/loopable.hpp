@@ -146,19 +146,20 @@ namespace rola
 			: condition_value_(cond)
 		{}
 
-		Loopable(bool cond)
-			: condition_value_([=]() {return cond; })
-		{}
-
 		Loopable(std::function<void()> action)
 			: action_(action)
 		{}
+
+		Loopable(Loopable const& rhs) = delete;
+		Loopable(Loopable&& rhs) = delete;
+		Loopable& operator=(Loopable const& rhs) = delete;
+		Loopable& operator=(Loopable&& rhs) = delete;
 
 	public:
 
 		void Early_loop_builder::Do(std::function<void()> action)
 		{
-			while (condition_value_)
+			while (condition_value_())
 			{
 				action();
 			}

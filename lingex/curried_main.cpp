@@ -72,7 +72,7 @@ public:
 	}
 };
 
-int main()
+int main_curried()
 {
 	auto foo_cd = rola::Curried(foo);
 	std::cout << "foo_cd: " << foo_cd(1)(3.567)("hello") << std::endl;
