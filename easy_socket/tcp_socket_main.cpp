@@ -120,7 +120,7 @@ int main_tcp_server()
 	return 0;
 }
 
-int main()
+int main_tcpclient()
 {
 	rola::socket_initializer init;
 	rola::tcp_connector conn({ "172.10.10.155", 8080 });
