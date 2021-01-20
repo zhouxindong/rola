@@ -14,7 +14,7 @@ set (HDR_FILES ${HDR_FILES} "curried.hpp")
 set (SRC_FILES ${SRC_FILES} "curried_main.cpp")
 
 # Add source to this project's executable.
-add_executable (lingex ${HDR_FILES} ${SRC_FILES})
+add_executable (lingex ${HDR_FILES} ${SRC_FILES} "presuffix.hpp" "presuffix_main.cpp")
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/lingex)
 

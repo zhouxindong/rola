@@ -7,7 +7,7 @@
 using namespace rola;
 using namespace rola::Flux;
 
-int main()
+int main_fluentx()
 {
 	int i = 0;
 
