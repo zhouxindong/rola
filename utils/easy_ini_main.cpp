@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int main()
+int main_easyini()
 {
 	std::string ini_file = "rdv2_config.ini";
 	Easy_ini inier(ini_file);
