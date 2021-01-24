@@ -55,6 +55,10 @@
 #define RX_UNLIKELY(cond) bool(cond)
 #endif
 
+#pragma push_macro("max")
+#pragma push_macro("min")
+#undef max
+#undef min
 
 /*!
     @brief rx::ranges library
@@ -2539,5 +2543,8 @@ namespace RX_NAMESPACE {
     };
 
 } // namespace RX_NAMESPACE
+
+#pragma pop_macro("min")
+#pragma pop_macro("max")
 
 #endif // RX_RANGES_HPP_INCLUDED

@@ -1,6 +1,7 @@
 #include "thread.hpp"
 #include <cassert>
 #include <iostream>
+#include "thread_safe_stack.hpp"
 
 int foo(double d)
 {
