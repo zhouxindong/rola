@@ -2,6 +2,7 @@
 #include <cassert>
 #include <iostream>
 #include "thread_safe_stack.hpp"
+#include "thread_pool.hpp"
 
 int foo(double d)
 {

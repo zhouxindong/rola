@@ -24,7 +24,7 @@ namespace rola
             {}
         };
 
-        node head;
+        Node head;
 
     public:
         Thread_safe_list()
@@ -40,7 +40,7 @@ namespace rola
 
         void push_front(T const& value)
         {
-            std::unique_ptr<node> new_node(new node(value));
+            std::unique_ptr<Node> new_node(new Node(value));
             std::lock_guard<std::mutex> lk(head.m);
             new_node->next = std::move(head.next);
             head.next = std::move(new_node);
@@ -49,9 +49,9 @@ namespace rola
         template<typename Function>
         void for_each(Function f)
         {
-            node* current = &head;
+            Node* current = &head;
             std::unique_lock<std::mutex> lk(head.m);
-            while (node* const next = current->next.get())
+            while (Node* const next = current->next.get())
             {
                 std::unique_lock<std::mutex> next_lk(next->m);
                 lk.unlock();
@@ -64,9 +64,9 @@ namespace rola
         template<typename Predicate>
         std::shared_ptr<T> find_first_if(Predicate p)
         {
-            node* current = &head;
+            Node* current = &head;
             std::unique_lock<std::mutex> lk(head.m);
-            while (node* const next = current->next.get())
+            while (Node* const next = current->next.get())
             {
                 std::unique_lock<std::mutex> next_lk(next->m);
                 lk.unlock();
@@ -83,14 +83,14 @@ namespace rola
         template<typename Predicate>
         void remove_if(Predicate p)
         {
-            node* current = &head;
+            Node* current = &head;
             std::unique_lock<std::mutex> lk(head.m);
-            while (node* const next = current->next.get())
+            while (Node* const next = current->next.get())
             {
                 std::unique_lock<std::mutex> next_lk(next->m);
                 if (p(*next->data))
                 {
-                    std::unique_ptr<node> old_next = std::move(current->next);
+                    std::unique_ptr<Node> old_next = std::move(current->next);
                     current->next = std::move(next->next);
                     next_lk.unlock();
                 }

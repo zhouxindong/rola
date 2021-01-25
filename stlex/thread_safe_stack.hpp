@@ -8,14 +8,6 @@
 
 namespace rola
 {
-	struct Empty_stack : std::exception
-	{
-		const char* what() const
-		{
-			return "empty stack";
-		}
-	};
-
 	/// <summary>
 	/// a thread safe stack based on mutex
 	/// </summary>
@@ -42,26 +34,27 @@ namespace rola
 		void push(T new_value)
 		{
 			std::lock_guard<std::mutex> lock(m_);
-			data.push(std::move(new_value));
+			data_.push(std::move(new_value));
 		}
 
 		std::shared_ptr<T> pop()
 		{
 			std::lock_guard<std::mutex> lock(m_);
-			if (data.empty())
-				throw Empty_stack();
+			if (data_.empty())
+				return std::shared_ptr<T>();
 
 			std::shared_ptr<T> const res(std::make_shared<T>(std::move(data_.top())));
 			data_.pop();
 			return res;
 		}
 
-		void pop(T& value)
+		bool pop(T& value)
 		{
 			std::lock_guard<std::mutex> lock(m_);
-			if (data_.empty()) throw Empty_stack();
-			value = std::move(data.top());
-			data.pop();
+			if (data_.empty()) return false;
+			value = std::move(data_.top());
+			data_.pop();
+			return true;
 		}
 
 		bool empty() const

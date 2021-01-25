@@ -33,6 +33,11 @@ namespace rola
 
         void call() { impl->call(); }
 
+		void operator()()
+		{
+			call();
+		}
+
         Moveonly_function_wrap(Moveonly_function_wrap&& other) :
             impl(std::move(other.impl))
         {}
@@ -43,6 +48,7 @@ namespace rola
             return *this;
         }
 
+		Moveonly_function_wrap() = default;
         Moveonly_function_wrap(const Moveonly_function_wrap&) = delete;
         Moveonly_function_wrap(Moveonly_function_wrap&) = delete;
         Moveonly_function_wrap& operator=(const Moveonly_function_wrap&) = delete;
