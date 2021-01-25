@@ -171,7 +171,7 @@ std::string to_string(T val)
 //	return true;
 //}
 
-int main()
+int main_rx_range()
 {
 	// advance overflow
 	auto bounds = seq() | take(10);

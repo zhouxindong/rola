@@ -20,7 +20,7 @@ set (SRC_FILES ${SRC_FILES} "easy_ini_main.cpp")
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 # Add source to this project's executable.
-add_executable (utils ${HDR_FILES} ${SRC_FILES} "byte_order.hpp" "ntp_client.hpp" "byte_order_main.cpp" "ntp_client_main.cpp")
+add_executable (utils ${HDR_FILES} ${SRC_FILES} "byte_order.hpp" "ntp_client.hpp" "byte_order_main.cpp" "ntp_client_main.cpp" "hash_val.hpp")
 
 target_include_directories(
 	utils

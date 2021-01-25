@@ -17,7 +17,7 @@ set (HDR_FILES ${HDR_FILES} "rx_range.hpp")
 set (SRC_FILES ${SRC_FILES} "rx_range_main.cpp")
 
 # Add source to this project's executable.
-add_executable (stlex ${HDR_FILES} ${SRC_FILES} "thread_safe_stack.hpp" "thread_safe_queue.hpp" "thread_safe_loopup_table.hpp" "thread_safe_list.hpp" "thread_pool.hpp")
+add_executable (stlex ${HDR_FILES} ${SRC_FILES} "thread_safe_stack.hpp" "thread_safe_queue.hpp" "thread_safe_lookup_table.hpp" "thread_safe_list.hpp" "thread_pool.hpp" "interruptible_thread.hpp" "interruptible_thread_main.cpp")
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/stlex)
 
