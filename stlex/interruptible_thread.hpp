@@ -4,21 +4,23 @@
 #include <functional>
 #include <future>
 #include <mutex>
+#include <type_traits>
+#include <chrono>
 
 namespace rola
 {
-	class interruption_flag;
+	class Interruption_flag;
 
-	extern thread_local interruption_flag int_flag;
+	extern thread_local Interruption_flag interrupt_flag;
 
-    class interruption_flag
+    class Interruption_flag
     {
     public:
         void set()
         {
-            flag_.store(true, memory_order::memory_order_relaxed);
+            flag_.store(true, std::memory_order::memory_order_relaxed);
 
-            std::lock_guard<mutex> lck(mtx_);
+            std::lock_guard<std::mutex> lck(mtx_);
             if (cnd_)
                 cnd_->notify_all();
 
@@ -28,78 +30,78 @@ namespace rola
 
         bool is_set() const
         {
-            return flag_.load(memory_order::memory_order_relaxed);
+            return flag_.load(std::memory_order::memory_order_relaxed);
         }
 
         struct cnd_guard
         {
-            cnd_guard(condition_variable& cnd)
+            cnd_guard(std::condition_variable& cnd)
             {
-                int_flag.set_cnd(cnd);
+                interrupt_flag.set_cnd(cnd);
             }
 
-            cnd_guard(condition_variable_any& cnd)
+            cnd_guard(std::condition_variable_any& cnd)
             {
-                int_flag.set_cnd(cnd);
+                interrupt_flag.set_cnd(cnd);
             }
 
             ~cnd_guard()
             {
-                int_flag.clear_cnd();
+                interrupt_flag.clear_cnd();
             }
         };
     private:
-        void set_cnd(condition_variable& cnd)
+        void set_cnd(std::condition_variable& cnd)
         {
-            std::lock_guard<mutex> lck(mtx_);
+            std::lock_guard<std::mutex> lck(mtx_);
             cnd_ = &cnd;
         }
 
-        void set_cnd(condition_variable_any& cnd)
+        void set_cnd(std::condition_variable_any& cnd)
         {
-            std::lock_guard<mutex> lck(mtx_);
+            std::lock_guard<std::mutex> lck(mtx_);
             cnda_ = &cnd;
         }
 
         void clear_cnd()
         {
-            std::lock_guard<mutex> lck(mtx_);
+            std::lock_guard<std::mutex> lck(mtx_);
             cnd_ = nullptr;
             cnda_ = nullptr;
         }
 
         template<typename Lock, typename Pred>
-        friend void interruptible_wait(condition_variable_any& cnd, Lock& lck, Pred pred);
+        friend void interruptible_wait(std::condition_variable_any& cnd, Lock& lck, Pred pred);
 
-        atomic<bool> flag_ = false;
+        std::atomic<bool> flag_ = false;
 
-        mutable mutex mtx_;
-        condition_variable* cnd_ = nullptr;
-        condition_variable_any* cnda_ = nullptr;
+        mutable std::mutex mtx_;
+        std::condition_variable* cnd_ = nullptr;
+        std::condition_variable_any* cnda_ = nullptr;
     };
 
-    static thread_local interruption_flag int_flag;
+    static thread_local Interruption_flag interrupt_flag;
 
 
-    class interruptible_thread : public thread
+    class Interruptible_thread : public std::thread
     {
     public:
         template<typename Fn, typename... Args,
-            typename = enable_if_t<!is_same_v<decay_t<Fn>, interruptible_thread>>>
-            interruptible_thread(Fn&& fn, Args&&... args)
+            typename = std::enable_if_t<!std::is_same_v<std::decay_t<Fn>, Interruptible_thread>>>
+            Interruptible_thread(Fn&& fn, Args&&... args)
         {
-            promise<interruption_flag*> pro;
+            std::promise<Interruption_flag*> pro;
             auto fut = pro.get_future();
 
-            static_cast<thread&>(*this) = thread([&] {
-                auto t = bind(forward<Fn>(fn), forward<Args>(args)...);
-                pro.set_value(&int_flag);
+            static_cast<std::thread&>(*this) = std::thread([&] {
+                auto t = std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...);
+                pro.set_value(&interrupt_flag);
 
                 try
                 {
                     t();
                 }
-                catch (thread_interrupted&)
+                catch (Thread_interrupted&)
                 {
                 }
                 });
@@ -110,31 +112,31 @@ namespace rola
         void interrupt()
         {
             if (!joinable())
-                throw(runtime_error("no running thread"));
+                throw(std::runtime_error("no running thread"));
 
             flag_->set();
         }
 
     private:
-        struct thread_interrupted : public exception {};
+        struct Thread_interrupted : public std::exception {};
 
         friend void interruption_point();
 
-        interruption_flag* flag_ = nullptr;
+        Interruption_flag* flag_ = nullptr;
     };
 
     inline void interruption_point()
     {
-        if (int_flag.is_set())
-            throw interruptible_thread::thread_interrupted();
+        if (interrupt_flag.is_set())
+            throw Interruptible_thread::Thread_interrupted();
     }
 
     template<typename Pred>
-    void interruptible_wait(condition_variable& cnd, unique_lock<mutex>& lck, Pred pred,
-        chrono::milliseconds delay = chrono::milliseconds(1))
+    void interruptible_wait(std::condition_variable& cnd, std::unique_lock<std::mutex>& lck, Pred pred,
+        std::chrono::milliseconds delay = std::chrono::milliseconds(1))
     {
         interruption_point();
-        interruption_flag::cnd_guard guard(cnd);
+        Interruption_flag::cnd_guard guard(cnd);
 
         while (!pred())
         {
@@ -146,17 +148,17 @@ namespace rola
     }
 
     template<typename Lock, typename Pred>
-    void interruptible_wait(condition_variable_any& cnd, Lock& lck, Pred pred)
+    void interruptible_wait(std::condition_variable_any& cnd, Lock& lck, Pred pred)
     {
-        struct custom_lock
+        struct Custom_lock
         {
-            custom_lock(mutex& mtx, Lock& lck) :
+            Custom_lock(std::mutex& mtx, Lock& lck) :
                 mtx_(mtx), lck_(lck)
             {
                 mtx_.lock();
             }
 
-            ~custom_lock()
+            ~Custom_lock()
             {
                 mtx_.unlock();
             }
@@ -172,17 +174,17 @@ namespace rola
                 lck_.unlock();
             }
 
-            mutex& mtx_;
+            std::mutex& mtx_;
             Lock& lck_;
         };
 
         interruption_point();
-        interruption_flag::cnd_guard guard(cnd);
+        Interruption_flag::cnd_guard guard(cnd);
 
-        custom_lock c_lck(int_flag.mtx_, lck);
+        Custom_lock c_lck(interrupt_flag.mtx_, lck);
         interruption_point();
 
-        cnd.wait(c_lck, [&] { return int_flag.is_set() || pred(); });
+        cnd.wait(c_lck, [&] { return interrupt_flag.is_set() || pred(); });
         interruption_point();
     }
 } // namespace rola

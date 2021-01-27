@@ -19,7 +19,7 @@ namespace rola
 
 			void lock()
 			{
-				bool expect = false
+				bool expect = false;
 				while (!flag_.compare_exchange_weak(expect, true))
 				{
 					expect = false;

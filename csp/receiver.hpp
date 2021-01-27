@@ -9,6 +9,8 @@ namespace rola
 	namespace csp
 	{
 		// own the message queue
+		// 1. wait for queue message
+		// 2. check message type if type matched, then dispatch(schdule the message)
 		class receiver
 		{
 			queue q; // receiver has own the queue

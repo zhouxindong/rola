@@ -74,10 +74,12 @@ namespace rola
 		class Join_threads
 		{
 			std::vector<std::thread>& threads;
+			thread_raii::dtor_action action_;
 
 		public:
-			explicit Join_threads(std::vector<std::thread>& threads_)
+			explicit Join_threads(std::vector<std::thread>& threads_, thread_raii::dtor_action action = thread_raii::dtor_action::join)
 				: threads(threads_)
+				, action_(action)
 			{}
 
 			~Join_threads()
@@ -85,7 +87,12 @@ namespace rola
 				for (unsigned long i = 0; i < threads.size(); ++i)
 				{
 					if (threads[i].joinable())
-						threads[i].join();
+					{
+						if (action_ == thread_raii::dtor_action::join)
+							threads[i].join();
+						else if (action_ == thread_raii::dtor_action::detach)
+							threads[i].detach();
+					}
 				}
 			}
 		};

@@ -3,6 +3,9 @@
 #include <thread>
 #include <chrono>
 
+using namespace std;
+using namespace rola;
+
 void func()
 {
     condition_variable_any cnd;
@@ -28,12 +31,12 @@ void func2()
 
 int main()
 {
-    interruptible_thread th(func);
+    Interruptible_thread th(func);
 
     th.interrupt();
     th.join();
 
-    interruptible_thread th2(func2);
+    Interruptible_thread th2(func2);
     system("pause");
     th2.interrupt();
     th2.join();
