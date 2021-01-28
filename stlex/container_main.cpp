@@ -70,7 +70,7 @@ public:
 		return i + 2.0;
 	}
 };
-int main_cm()
+int main_container()
 {
 	std::vector<int> v{ 1,2,3,4,5,6 };
 	rola::stlex::erase_remove(v, [](int const& i) {

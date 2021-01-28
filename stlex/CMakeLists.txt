@@ -15,9 +15,16 @@ set (SRC_FILES ${SRC_FILES} "thread_main.cpp")
 set (HDR_FILES ${HDR_FILES} "easy_range.hpp")
 set (HDR_FILES ${HDR_FILES} "rx_range.hpp")
 set (SRC_FILES ${SRC_FILES} "rx_range_main.cpp")
+set (HDR_FILES ${HDR_FILES} "thread_safe_stack.hpp")
+set (HDR_FILES ${HDR_FILES} "thread_safe_queue.hpp")
+set (HDR_FILES ${HDR_FILES} "thread_safe_lookup_table.hpp")
+set (HDR_FILES ${HDR_FILES} "thread_safe_list.hpp")
+set (HDR_FILES ${HDR_FILES} "thread_pool.hpp")
+set (HDR_FILES ${HDR_FILES} "interruptible_thread.hpp")
+set (SRC_FILES ${SRC_FILES} "interruptible_thread_main.cpp")
 
 # Add source to this project's executable.
-add_executable (stlex ${HDR_FILES} ${SRC_FILES} "thread_safe_stack.hpp" "thread_safe_queue.hpp" "thread_safe_lookup_table.hpp" "thread_safe_list.hpp" "thread_pool.hpp" "interruptible_thread.hpp" "interruptible_thread_main.cpp")
+add_executable (stlex ${HDR_FILES} ${SRC_FILES})
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/stlex)
 
