@@ -14,8 +14,8 @@ add_executable (easy_bus ${HDR_FILES} ${SRC_FILES})
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/easy_bus)
 
 # TODO: Add tests and install targets if needed.
-set_property(TARGET drop PROPERTY CXX_STANDARD 17)
-set_property(TARGET drop PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET easy_bus PROPERTY CXX_STANDARD 17)
+set_property(TARGET easy_bus PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_include_directories(
 	easy_bus
