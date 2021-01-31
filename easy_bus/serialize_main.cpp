@@ -9,8 +9,14 @@ public:
 	int age;
 	double height;
 
+	Foo(std::string n, int a, double h)
+		: name(n), age(a), height(h)
+	{}
+
+	Foo() = default;
+
 public:
-	std::string serialize()
+	std::string serialize() const
 	{
 		rola::Data_serializer ser;
 		ser << name << age << height;
@@ -20,13 +26,21 @@ public:
 	static int32_t deserialize(std::string& str, Foo& foo)
 	{
 		rola::Data_deserializer dser(str);
+		
 		dser >> foo.name >> foo.age >> foo.height;
-		return sizeof(foo);
+		return 0;
 	}
 };
 
+std::ostream& operator<<(std::ostream& out, Foo const& f)
+{
+	out << "name: " << f.name << ", age: " << f.age << ", height: " << f.height;
+	return out;
+}
+
 int main()
 {
+	// built-in type
 	bool b = true;
 	char c = 'c';
 	int8_t i8 = -99;
@@ -92,12 +106,14 @@ int main()
 	assert(f == f2);
 	assert(d == d2);
 
+	// std::string
 	std::string s = "abcdefghijklmnopqrstuvwxyz";
 	std::string ss = rola::serialize(s);
 	std::string s2;
 	rola::deserialize(ss, s2);
 	assert(s == s2);
 
+	// array
 	int ary[10] = { 1,2,3,4,5,6,7,8,9,10 };
 	std::string ary_s = rola::serialize(ary);
 	int ary_2[10];
@@ -106,8 +122,9 @@ int main()
 	{
 		assert(ary[i] == ary_2[i]);
 	}
-	assert(len == 44);
+	assert(len == 0);
 
+	// std::vector
 	std::vector<double> v{ 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9 };
 	std::string v_s = rola::serialize(v);
 	std::vector<double> v2;
@@ -116,7 +133,7 @@ int main()
 	{
 		assert(v[i] == v2[i]);
 	}
-	assert(len == 76);
+	assert(len == 0);
 
 	std::vector<std::string> vs{ "hello", "world", "hello world" };
 	std::string vs_s = rola::serialize(vs);
@@ -127,6 +144,18 @@ int main()
 		assert(vs[i] == vs_2[i]);
 	}
 
+	std::vector<Foo> vec_foo;
+	vec_foo.push_back(Foo("foo1", 32, 234.32));
+	vec_foo.push_back(Foo("foo2", 42, 132.32));
+	std::string vec_foo_s = rola::serialize(vec_foo);
+	std::vector<Foo> vec_foo2;
+	rola::deserialize(vec_foo_s, vec_foo2);
+	for (auto& item : vec_foo2)
+	{
+		std::cout << item << std::endl;
+	}
+
+	// custom class
 	Foo foo;
 	foo.name = "Foo object";
 	foo.age = 283;
@@ -138,6 +167,33 @@ int main()
 	std::cout << "foo2::name = " << foo2.name << std::endl;
 	std::cout << "foo2::age = " << foo2.age << std::endl;
 	std::cout << "foo2::height = " << foo2.height << std::endl;
+
+	// pair
+	std::pair<std::string, Foo> pf;
+	pf.first = "pair.first";
+	pf.second = foo;
+	std::string pf_s = rola::serialize(pf);
+	std::pair<std::string, Foo> pf2;
+	rola::deserialize(pf_s, pf2);
+	assert(pf.first == pf2.first);
+	assert(pf.second.name == pf2.second.name);
+	assert(pf.second.age == pf2.second.age);
+	assert(pf.second.height == pf2.second.height);
+
+	// map
+	std::map<std::string, Foo> m;
+	m["first"] = foo;
+
+	Foo foo3;
+	foo3.name = "foo object2";
+	foo3.age = 32;
+	foo3.height = 23.1;
+	m["second"] = foo3;
+	std::string m_s = rola::serialize(m);
+
+	std::map<std::string, Foo> m2;
+	rola::deserialize(m_s, m2);
+
 
 	std::cout << "serialize_main successful" << std::endl;
 	return 0;

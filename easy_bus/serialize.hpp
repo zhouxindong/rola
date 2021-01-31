@@ -5,6 +5,8 @@
 #include <type_traits>
 #include <sstream>
 #include <vector>
+#include <utility>
+#include <map>
 
 #include "utils/byte_order.hpp"
 
@@ -52,6 +54,14 @@ namespace rola
 	struct Has_deserialize<T, decltype(T::deserialize(std::declval<std::string>(), std::declval<T>()))> : std::true_type
 	{};
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <typeparam name=""></typeparam>
+	/// <param name="s"></param>
+	/// <param name="t"></param>
+	/// <returns>means the offset after deserialize between the pointer of str and next data start point</returns>
 	template <typename T, typename = std::enable_if_t<Has_deserialize<T>::value>>
 	inline int32_t deserialize(std::string& s, T& t)
 	{
@@ -96,9 +106,9 @@ namespace rola
 
 	// overload for int32_t
 	inline std::string serialize(int32_t a)
-	{
-		std::string s;
+	{		
 		int32_t tmp = rola::host_to_network(a);
+		std::string s;
 		s.append((const char*)&tmp, sizeof(tmp));
 		return s;
 	}
@@ -153,6 +163,7 @@ namespace rola
 		return len + sizeof(int32_t);
 	}
 
+
 #pragma endregion
 
 #pragma region compound and STL 
@@ -178,15 +189,13 @@ namespace rola
 	template <typename T>
 	inline int32_t liner_deserialize_data(std::string& str, T& v, uint32_t size)
 	{
-		int data_len = 0;
 		int len;
 		for (uint32_t i = 0; i < size; ++i)
 		{
 			len = deserialize(str, v[i]);
-			data_len += len;
 			str = str.substr(len);
 		}
-		return data_len;
+		return 0;
 	}
 
 	// build-in array
@@ -205,7 +214,7 @@ namespace rola
 			throw std::runtime_error("array size mismatched");
 
 		str = str.substr(ret);
-		return liner_deserialize_data(str, ary, size) + ret;
+		return liner_deserialize_data(str, ary, size);
 	}
 
 	// vector
@@ -223,11 +232,57 @@ namespace rola
 		int ret = linear_deserialize_size(str, size);
 		str = str.substr(ret);
 		v.resize(size);
-		return liner_deserialize_data(str, v, size) + ret;
+		return liner_deserialize_data(str, v, size);
+	}
+
+	// pair
+	template <typename Key, typename Value>
+	inline std::string serialize(std::pair<Key, Value> const& v)
+	{
+		std::string tmp;
+		tmp.append(serialize(v.first));
+		tmp.append(serialize(v.second));
+		return tmp;
+	}
+
+	template <typename Key, typename Value>
+	inline int32_t deserialize(std::string& str, std::pair<Key, Value>& v)
+	{
+		int len_key = deserialize(str, v.first);
+		str = str.substr(len_key);
+		int len_value = deserialize(str, v.second);
+		str = str.substr(len_value);
+		return 0;
 	}
 
 	// map
+	template <typename Key, typename Value>
+	inline std::string serialize(std::map<Key, Value> const& m)
+	{
+		std::string tmp;
+		tmp.append(serialize(static_cast<uint32_t>(m.size())));
+		for (auto& p : m)
+		{
+			tmp.append(serialize(p));
+		}
+		return tmp;
+	}
 
+	template <typename Key, typename Value>
+	inline int32_t deserialize(std::string& str, std::map<Key, Value>& m)
+	{
+		uint32_t size;
+		int len = deserialize(str, size);
+		str = str.substr(len);
+		for (uint32_t i = 0; i < size; ++i)
+		{
+			std::pair<Key, Value> p;
+			rola::deserialize(str, p);
+			m[p.first] = std::move(p.second);
+
+		}
+		return 0;
+	}
 
 #pragma endregion
 
@@ -273,10 +328,10 @@ namespace rola
 
 	class Data_deserializer
 	{
-		std::string str_;
+		std::string& str_;
 
 	public:
-		Data_deserializer(std::string s)
+		Data_deserializer(std::string& s)
 			: str_(s)
 		{}
 
@@ -287,10 +342,10 @@ namespace rola
 			str_ = str_.substr(ret);
 			return *this;
 		}
-		void set_str(std::string s)
-		{
-			str_ = std::move(s);
-		}
+		//void set_str(std::string s)
+		//{
+		//	str_ = std::move(s);
+		//}
 	};
 
 #pragma endregion
