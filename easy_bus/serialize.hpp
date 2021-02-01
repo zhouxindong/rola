@@ -279,7 +279,6 @@ namespace rola
 			std::pair<Key, Value> p;
 			rola::deserialize(str, p);
 			m[p.first] = std::move(p.second);
-
 		}
 		return 0;
 	}
@@ -342,10 +341,6 @@ namespace rola
 			str_ = str_.substr(ret);
 			return *this;
 		}
-		//void set_str(std::string s)
-		//{
-		//	str_ = std::move(s);
-		//}
 	};
 
 #pragma endregion

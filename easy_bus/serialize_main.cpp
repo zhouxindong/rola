@@ -30,6 +30,11 @@ public:
 		dser >> foo.name >> foo.age >> foo.height;
 		return 0;
 	}
+
+	bool operator==(Foo const& rhs)
+	{
+		return name == rhs.name && age == rhs.age && height == rhs.height;
+	}
 };
 
 std::ostream& operator<<(std::ostream& out, Foo const& f)
@@ -193,6 +198,8 @@ int main()
 
 	std::map<std::string, Foo> m2;
 	rola::deserialize(m_s, m2);
+	assert(m2["first"] == foo);
+	assert(m2["second"] == foo3);
 
 
 	std::cout << "serialize_main successful" << std::endl;
