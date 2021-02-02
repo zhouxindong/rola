@@ -201,7 +201,6 @@ int main()
 	assert(m2["first"] == foo);
 	assert(m2["second"] == foo3);
 
-
 	std::cout << "serialize_main successful" << std::endl;
 	return 0;
 }

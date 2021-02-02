@@ -45,7 +45,7 @@ public:
 	}
 };
 
-int main()
+int main_presuffix()
 {
 	rola::Presuffix<X> xx(new X);
 	rola::Presuffix<Y> yy(new Y);

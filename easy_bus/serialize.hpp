@@ -7,6 +7,7 @@
 #include <vector>
 #include <utility>
 #include <map>
+#include <tuple>
 
 #include "utils/byte_order.hpp"
 

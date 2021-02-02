@@ -12,9 +12,13 @@ set (SRC_FILES ${SRC_FILES} "fluentx_main.cpp")
 set (HDR_FILES ${HDR_FILES} "loopable.hpp")
 set (HDR_FILES ${HDR_FILES} "curried.hpp")
 set (SRC_FILES ${SRC_FILES} "curried_main.cpp")
+set (HDR_FILES ${HDR_FILES} "presuffix.hpp")
+set (HDR_FILES ${HDR_FILES} "presuffix_main.cpp")
+set (HDR_FILES ${HDR_FILES} "inheritance.hpp")
+set (SRC_FILES ${SRC_FILES} "inheritance_man.cpp")
 
 # Add source to this project's executable.
-add_executable (lingex ${HDR_FILES} ${SRC_FILES} "presuffix.hpp" "presuffix_main.cpp")
+add_executable (lingex ${HDR_FILES} ${SRC_FILES})
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/lingex)
 

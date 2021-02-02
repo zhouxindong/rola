@@ -19,3 +19,5 @@ target_include_directories(
 	${CMAKE_SOURCE_DIR})
 
 # TODO: Add tests and install targets if needed.
+set_property(TARGET trick PROPERTY CXX_STANDARD 17)
+set_property(TARGET trick PROPERTY CXX_STANDARD_REQUIRED ON)
