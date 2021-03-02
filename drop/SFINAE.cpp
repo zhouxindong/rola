@@ -47,7 +47,7 @@ public:
 template <typename T>
 using containted_type_t = decltype(*std::begin(T()));
 
-int main()
+int main_sfinae()
 {
 	static_assert(!Has_serialize_98<std::string>::value);
 	static_assert(!Has_serialize_98<A>::value);

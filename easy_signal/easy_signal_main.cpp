@@ -75,13 +75,15 @@ private:
 	}
 };
 
-int main()
+int main_signal()
 {
 	rola::Easy_signal<int()> sig;
 
 	BBar2 b2;
 	sig.connect(&BBar2::Foo2, *(static_cast<Bar2*>(&b2)));
 	sig.emit_();
+
+	return 0;
 }
 
 // basic test: connect, disconnect, reconnect

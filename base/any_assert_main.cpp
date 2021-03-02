@@ -1,6 +1,6 @@
 #include "any_assert.hpp"
 
-int main()
+int main_any_assert()
 {
 	//ASSERT_ANY(true);
 	ASSERT_ANY(false);

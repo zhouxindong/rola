@@ -18,7 +18,7 @@ set (HDR_FILES ${HDR_FILES} "inheritance.hpp")
 set (SRC_FILES ${SRC_FILES} "inheritance_man.cpp")
 
 # Add source to this project's executable.
-add_executable (lingex ${HDR_FILES} ${SRC_FILES})
+add_executable (lingex ${HDR_FILES} ${SRC_FILES} "named_type.hpp")
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/lingex)
 

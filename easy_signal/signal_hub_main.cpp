@@ -38,7 +38,17 @@ void thread_proc(Signal_hub<bool(int)>* hub)
 	}
 }
 
-int main2()
+class Foo
+{
+public:
+	bool bar(std::string const& s)
+	{
+		std::cout << "Foo::bar(std::string)"  << s << std::endl;
+		return true;
+	}
+};
+
+int main()
 {
 	Signal_hub<bool(int)>* sig_hub = Singlable<Signal_hub<bool(int)>>::instance_p();
 	std::cout << "press any key to register main_signal\n";

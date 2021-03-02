@@ -7,7 +7,6 @@
 #include <vector>
 #include <utility>
 #include <map>
-#include <tuple>
 
 #include "utils/byte_order.hpp"
 
@@ -25,7 +24,7 @@ namespace rola
 	{};
 
 	template <typename T>
-	struct Has_serialize<T, decltype(std::declval<T>().serialize())> : std::true_type
+	struct Has_serialize<T, decltype(std::declval<T const>().serialize())> : std::true_type
 	{};
 
 	template <typename T>
@@ -33,13 +32,6 @@ namespace rola
 		serialize(T const& obj)
 	{
 		return obj.serialize(); // serialize() const
-	}
-
-	template <typename T>
-	inline std::enable_if_t<Has_serialize<T>::value, std::string>
-		serialize(T& obj)
-	{
-		return obj.serialize();
 	}
 
 	/// <summary>
@@ -52,7 +44,7 @@ namespace rola
 	{};
 
 	template <typename T>
-	struct Has_deserialize<T, decltype(T::deserialize(std::declval<std::string>(), std::declval<T>()))> : std::true_type
+	struct Has_deserialize<T, decltype(T::deserialize(std::declval<std::string&>(), std::declval<T&>()))> : std::true_type
 	{};
 
 	/// <summary>
@@ -107,7 +99,7 @@ namespace rola
 
 	// overload for int32_t
 	inline std::string serialize(int32_t a)
-	{		
+	{
 		int32_t tmp = rola::host_to_network(a);
 		std::string s;
 		s.append((const char*)&tmp, sizeof(tmp));
@@ -123,31 +115,31 @@ namespace rola
 
 	// overload for built-in numeric type
 	NORMAL_DATA_SERIALIZE(float)
-	NORMAL_DATA_DESERIALIZE(float)
-	NORMAL_DATA_SERIALIZE(double)
-	NORMAL_DATA_DESERIALIZE(double)
-	NORMAL_DATA_SERIALIZE(int8_t)
-	NORMAL_DATA_DESERIALIZE(int8_t)
-	NORMAL_DATA_SERIALIZE(uint8_t)
-	NORMAL_DATA_DESERIALIZE(uint8_t)
-	NORMAL_DATA_SERIALIZE(bool)
-	NORMAL_DATA_DESERIALIZE(bool)
-	NORMAL_DATA_SERIALIZE(char)
-	NORMAL_DATA_DESERIALIZE(char)
+		NORMAL_DATA_DESERIALIZE(float)
+		NORMAL_DATA_SERIALIZE(double)
+		NORMAL_DATA_DESERIALIZE(double)
+		NORMAL_DATA_SERIALIZE(int8_t)
+		NORMAL_DATA_DESERIALIZE(int8_t)
+		NORMAL_DATA_SERIALIZE(uint8_t)
+		NORMAL_DATA_DESERIALIZE(uint8_t)
+		NORMAL_DATA_SERIALIZE(bool)
+		NORMAL_DATA_DESERIALIZE(bool)
+		NORMAL_DATA_SERIALIZE(char)
+		NORMAL_DATA_DESERIALIZE(char)
 
-	ORDER_DATA_SERIALIZE(int16_t)
-	ORDER_DATA_DESERIALIZE(int16_t)
-	ORDER_DATA_SERIALIZE(uint16_t)
-	ORDER_DATA_DESERIALIZE(uint16_t)
-	ORDER_DATA_SERIALIZE(uint32_t)
-	ORDER_DATA_DESERIALIZE(uint32_t)
-	ORDER_DATA_SERIALIZE(int64_t)
-	ORDER_DATA_DESERIALIZE(int64_t)
-	ORDER_DATA_SERIALIZE(uint64_t)
-	ORDER_DATA_DESERIALIZE(uint64_t)
+		ORDER_DATA_SERIALIZE(int16_t)
+		ORDER_DATA_DESERIALIZE(int16_t)
+		ORDER_DATA_SERIALIZE(uint16_t)
+		ORDER_DATA_DESERIALIZE(uint16_t)
+		ORDER_DATA_SERIALIZE(uint32_t)
+		ORDER_DATA_DESERIALIZE(uint32_t)
+		ORDER_DATA_SERIALIZE(int64_t)
+		ORDER_DATA_DESERIALIZE(int64_t)
+		ORDER_DATA_SERIALIZE(uint64_t)
+		ORDER_DATA_DESERIALIZE(uint64_t)
 
-	// overload for std::string
-	inline std::string serialize(std::string const& a)
+		// overload for std::string
+		inline std::string serialize(std::string const& a)
 	{
 		int32_t len = static_cast<int32_t>(a.size());
 		std::string ans;
@@ -280,6 +272,7 @@ namespace rola
 			std::pair<Key, Value> p;
 			rola::deserialize(str, p);
 			m[p.first] = std::move(p.second);
+
 		}
 		return 0;
 	}
@@ -345,8 +338,6 @@ namespace rola
 	};
 
 #pragma endregion
-
-
 } // namespace rola
 
 #endif // !ROLA_EASY_BUS_SERIALIZE_HPP

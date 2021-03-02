@@ -14,8 +14,10 @@ set (HDR_FILES ${HDR_FILES} "any_assert.hpp")
 set (SRC_FILES ${SRC_FILES} "any_assert_main.cpp")
 
 # Add source to this project's executable.
-add_executable (base ${HDR_FILES} ${SRC_FILES})
+add_executable (base ${HDR_FILES} ${SRC_FILES} "assignable.hpp" "assignable_main.cpp")
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/base)
 
 # TODO: Add tests and install targets if needed.
+set_property(TARGET base PROPERTY CXX_STANDARD 17)
+set_property(TARGET base PROPERTY CXX_STANDARD_REQUIRED ON)

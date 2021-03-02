@@ -11,7 +11,7 @@ set (HDR_FILES ${HDR_FILES} "proxy.hpp")
 set (HDR_FILES ${HDR_FILES} "recursion.hpp")
 
 # Add source to this project's executable.
-add_executable (trick ${HDR_FILES} ${SRC_FILES})
+add_executable (trick ${HDR_FILES} ${SRC_FILES} "monad.hpp")
 
 target_include_directories(
 	trick
