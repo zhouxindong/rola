@@ -24,7 +24,7 @@ set (HDR_FILES ${HDR_FILES} "interruptible_thread.hpp")
 set (SRC_FILES ${SRC_FILES} "interruptible_thread_main.cpp")
 
 # Add source to this project's executable.
-add_executable (stlex ${HDR_FILES} ${SRC_FILES})
+add_executable (stlex ${HDR_FILES} ${SRC_FILES} "algorithm.hpp")
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/stlex)
 

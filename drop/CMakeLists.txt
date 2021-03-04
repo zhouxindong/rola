@@ -15,7 +15,7 @@ set (SRC_FILES ${SRC_FILES} "SFINAE.cpp")
 set (HDR_FILES ${HDR_FILES} "debug_template.h")
 
 # Add source to this project's executable.
-add_executable (drop ${HDR_FILES} ${SRC_FILES} "thread.h" "tuple_main.cpp" "container_demo.h")
+add_executable (drop ${HDR_FILES} ${SRC_FILES} "thread.h" "tuple_main.cpp" "container_demo.h" "iterator_demo.h" "cpp17.h")
 
 add_subdirectory ("trick")
 set_property(TARGET drop PROPERTY CXX_STANDARD 17)

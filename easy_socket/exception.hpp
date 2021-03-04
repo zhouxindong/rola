@@ -11,10 +11,15 @@
 // Used to explicitly ignore the returned value of a function call.
 #define ignore_result(x) if (x) {}
 
-#pragma push_macro("FormatMessage")
-#pragma push_macro("gai_strerror")
-#undef FormatMessage
-#undef gai_strerror
+//#pragma push_macro("FormatMessage")
+//#pragma push_macro("gai_strerror")
+//#undef FormatMessage
+//#undef gai_strerror
+#if defined(_WIN32)
+#define gai_strerror_ gai_strerrorA
+#else
+#define gai_strerror_ gai_strerror
+#endif
 
 namespace rola
 {
@@ -93,7 +98,7 @@ namespace rola
 		 * @param hostname The DNS name being resolved that triggered the error.
 		 */
 		getaddrinfo_error(int err, const std::string& hostname)
-			: runtime_error(::gai_strerrorA(err)), error_(err), hostname_(hostname)
+			: runtime_error(gai_strerror(err)), error_(err), hostname_(hostname)
 		{}
 		/**
 		 * Get the error number.
@@ -108,7 +113,7 @@ namespace rola
 	};
 } // namespace rola
 
-#pragma pop_macro("gai_strerror")
-#pragma pop_macro("FormatMessage")
+//#pragma pop_macro("gai_strerror")
+//#pragma pop_macro("FormatMessage")
 
 #endif // !ROLA_EASY_SOCKET_EXCEPTION_HPP
