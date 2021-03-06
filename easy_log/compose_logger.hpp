@@ -60,6 +60,19 @@ namespace rola
 		}
 	};
 
+	template <typename LogItem, typename LogFormatter, typename Filter>
+	class udp_logger_item : public logger_item_base<LogItem, LogFormatter>
+	{
+	public:
+		template <typename ... Ts>
+		udp_logger_item(Ts&& ... ts)
+		{
+			this->filter_ = std::make_shared<Filter>();
+			this->channel_ = std::make_shared<udp_channel<LogItem, LogFormatter>>(
+				std::forward<Ts>(ts)...);
+		}
+	};
+
 #pragma endregion
 
 #pragma region compose_logger

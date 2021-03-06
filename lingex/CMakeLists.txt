@@ -16,9 +16,10 @@ set (HDR_FILES ${HDR_FILES} "presuffix.hpp")
 set (HDR_FILES ${HDR_FILES} "presuffix_main.cpp")
 set (HDR_FILES ${HDR_FILES} "inheritance.hpp")
 set (SRC_FILES ${SRC_FILES} "inheritance_man.cpp")
+set (HDR_FILES ${HDR_FILES} "named_type.hpp")
 
 # Add source to this project's executable.
-add_executable (lingex ${HDR_FILES} ${SRC_FILES} "named_type.hpp")
+add_executable (lingex ${HDR_FILES} ${SRC_FILES})
 
 install (FILES ${HDR_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/lingex)
 

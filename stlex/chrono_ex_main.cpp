@@ -1,6 +1,7 @@
 #include "chrono_ex.hpp"
 #include <iostream>
 #include <cassert>
+#include "algorithm.hpp"
 
 using namespace rola;
 

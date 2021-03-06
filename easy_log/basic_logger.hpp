@@ -93,6 +93,12 @@ namespace rola
 		null_filter<log_item, line_formatter<log_item>>>
 		file_logger;
 
+	// udp logger for all levels
+	typedef basic_logger<
+		udp_channel<log_item, line_formatter<log_item>>,
+		null_filter<log_item, line_formatter<log_item>>>
+		udp_logger;
+
 	// console logger for above info level
 	typedef basic_logger<
 		console_channel<log_item, line_formatter<log_item>>,
@@ -106,6 +112,11 @@ namespace rola
 		file_info_logger;
 
 	typedef basic_logger<
+		udp_channel<log_item, line_formatter<log_item>>,
+		level_filter<log_item, line_formatter<log_item>, rola::EasyLogLevel::EASY_LOG_INFO>>
+		udp_info_logger;
+
+	typedef basic_logger<
 		console_channel<log_item, debug_formatter<log_item>>,
 		null_filter<log_item, debug_formatter<log_item>>>
 		console_debug;
@@ -114,6 +125,11 @@ namespace rola
 		file_channel<log_item, debug_formatter<log_item>>,
 		null_filter<log_item, debug_formatter<log_item>>>
 		file_debug;
+
+	typedef basic_logger<
+		udp_channel<log_item, debug_formatter<log_item>>,
+		null_filter<log_item, debug_formatter<log_item>>>
+		udp_debug;
 } // namespace rola
 
 #endif // !ROLA_EASY_LOG_BASIC_LOGGER_HPP

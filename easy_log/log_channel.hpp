@@ -1,14 +1,18 @@
 #ifndef ROLA_EASY_LOG_LOG_CHANNEL_HPP
 #define ROLA_EASY_LOG_LOG_CHANNEL_HPP
 
+#include "easy_socket/udp_socket.h" // WIN32, must include first
+
 #include <ostream>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 //#include "log_item.hpp"
 //#include "log_formatter.hpp"
 #include "utils/path.hpp"
 #include "stlex/chrono_ex.hpp"
+#include "stlex/string.hpp"
 
 namespace rola
 {
@@ -297,6 +301,61 @@ namespace rola
 		}
 	private:
 		roll_file<FileMaxSize> roll_;
+	};
+
+#pragma endregion
+
+#pragma region udp_channel
+
+	template <typename LogItem, typename LogFormatter>
+	class udp_channel : public channel_base<LogItem, LogFormatter>
+	{
+	public:
+		udp_channel(std::string const& addr)
+		{
+			auto tokens = stlex::split(addr, { ':', '@', '_' });
+			if (tokens.size() < 2)
+				return;
+
+			in_port_t port = std::atoi(tokens[1].c_str());
+			connected_ = sock_.connect(rola::inet_address(tokens[0], port));
+		}
+
+		std::ostream& stream() noexcept override
+		{
+			return oss_;
+		}
+
+		std::ostream& flush() noexcept override
+		{
+			return oss_.flush();
+		}
+
+		bool ready() noexcept override
+		{
+			return connected_;
+		}
+
+		void log(log_item_type const& item, bool fls = true) noexcept override
+		{
+			if (!ready())
+				return;
+
+			stream() << log_formatter_type::format(item);
+			if (fls)
+				flush();
+
+			sock_.send(oss_.str());
+			oss_.str("");
+		}
+
+	private:
+		std::ostringstream oss_;
+
+	private:
+		rola::socket_initializer sock_init_;
+		rola::udp_socket sock_;
+		bool connected_{ false };
 	};
 
 #pragma endregion

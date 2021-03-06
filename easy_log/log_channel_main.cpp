@@ -43,6 +43,7 @@ int main_lcm2()
 	return 0;
 }
 
+// console channel
 int main_lcm3()
 {
 	rola::console_channel<rola::log_item, rola::line_formatter<rola::log_item>> terminal;
@@ -71,6 +72,7 @@ int main_lcm3()
 	return 0;
 }
 
+// file channel
 int main_lcm4()
 {
 	rola::file_channel<rola::log_item, rola::line_formatter<rola::log_item>, 1000000> 
@@ -104,5 +106,24 @@ int main_lcm4()
 		log1 = LOG(FATAL) << "a log item: fatal";
 		fc << log1;
 	}
+	return 0;
+}
+
+// udp channel
+int main_udp_channel()
+{
+	rola::udp_channel<rola::log_item, rola::line_formatter<rola::log_item>>
+		udpch("172.10.10.155:8080");
+
+
+	auto v = std::move(rola::generate_log_item(100));
+	for (auto& item : v)
+	{
+		udpch.log(item);
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+
+	std::cout << "log_channel_main.cpp successful\n";
 	return 0;
 }

@@ -30,14 +30,14 @@ int main()
 	//thr.join();
 
 	// 2. udp client
-	//rola::socket_initializer sockInit;
-	//rola::udp_socket sock;
+	rola::socket_initializer sockInit;
+	rola::udp_socket sock;
 
-	//assert(sock.connect(rola::inet_address("127.0.0.1", 8080)));
-	//std::cout << "Created UDP socket at: " << sock.address() << "\n";
+	assert(sock.connect(rola::inet_address("172.10.10.155", 8080)));
+	std::cout << "Created UDP socket at: " << sock.address() << "\n";
 
-	//std::string s = "hello";
-	//sock.send(s);
+	std::string s = "hello";
+	sock.send(s);
 
 	//std::string sr;
 	//sr.resize(512);
@@ -54,26 +54,26 @@ int main()
 	//sock.send_to("hello world", multi_addr);
 
 	// 4. multi-case receiver(224.0.0.88:8888)
-	rola::socket_initializer sockInit;
-	rola::udp_socket sock;
-	assert(sock);
-	bool binded = sock.bind(rola::inet_address("172.10.10.155", 8888));
-	assert(binded);
+	//rola::socket_initializer sockInit;
+	//rola::udp_socket sock;
+	//assert(sock);
+	//bool binded = sock.bind(rola::inet_address("172.10.10.155", 8888));
+	//assert(binded);
 
-	int loop = 1;
-	assert(sock.set_option(IPPROTO_IP, IP_MULTICAST_LOOP, loop));
+	//int loop = 1;
+	//assert(sock.set_option(IPPROTO_IP, IP_MULTICAST_LOOP, loop));
 
-	struct ip_mreq mreq;
-	mreq.imr_multiaddr.S_un.S_addr = inet_addr("224.0.0.88");
-	mreq.imr_interface.S_un.S_addr = inet_addr("172.10.10.155");
-	assert(sock.set_option(IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq));
+	//struct ip_mreq mreq;
+	//mreq.imr_multiaddr.S_un.S_addr = inet_addr("224.0.0.88");
+	//mreq.imr_interface.S_un.S_addr = inet_addr("172.10.10.155");
+	//assert(sock.set_option(IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq));
 
-	std::string sr;
-	sr.resize(512);
-	ssize_t len = sock.recv(&sr[0], 512);
-	std::cout << "received: " << len << std::endl;
+	//std::string sr;
+	//sr.resize(512);
+	//ssize_t len = sock.recv(&sr[0], 512);
+	//std::cout << "received: " << len << std::endl;
 
-	assert(sock.set_option(IPPROTO_IP, IP_DROP_MEMBERSHIP, mreq));
+	//assert(sock.set_option(IPPROTO_IP, IP_DROP_MEMBERSHIP, mreq));
 
 	std::cout << "udp_socket_main success" << std::endl;
 	return 0;

@@ -43,3 +43,24 @@ int main_blm2()
 
 	return 0;
 }
+
+int main_udplogger()
+{
+	auto& logger = udp_logger::get("172.10.10.155::8080");
+	auto v = std::move(generate_log_item(200));
+	for (auto& item : v)
+	{
+		logger.log(item);
+	}
+
+	auto& logger2 = udp_info_logger::get("172.10.10.155::8080");
+	auto v2 = std::move(generate_log_item(200));
+	for (auto& item : v2)
+	{
+		logger2.log(item);
+	}
+
+	std::cout << "basic_logger_main.cpp successful\n";
+
+	return 0;
+}

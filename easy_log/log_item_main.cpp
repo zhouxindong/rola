@@ -4,7 +4,7 @@
 using namespace std;
 using namespace rola;
 
-int main()
+int main_logitemmain()
 {
 	//log_item log1(EasyLogLevel::EASY_LOG_FATAL, __FILE__, __func__, __LINE__);
 	//log1 << "some information" << " abcd ";
@@ -36,5 +36,7 @@ int main()
 
 	//log1 = LOG(FATAL) << "a log item: fatal";
 	//cout << log1 << endl;
+
+	std::cout << "log_item_main.cpp successful\n";
 	return 0;
 }

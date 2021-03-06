@@ -98,7 +98,7 @@ namespace rola
 		 * @param hostname The DNS name being resolved that triggered the error.
 		 */
 		getaddrinfo_error(int err, const std::string& hostname)
-			: runtime_error(gai_strerror(err)), error_(err), hostname_(hostname)
+			: runtime_error(gai_strerror_(err)), error_(err), hostname_(hostname)
 		{}
 		/**
 		 * Get the error number.

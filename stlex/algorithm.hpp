@@ -2,6 +2,7 @@
 #define ROLA_STLEX_ALGORITHM_HPP
 
 #include <vector>
+#include <algorithm>
 
 namespace rola
 {
@@ -24,6 +25,20 @@ namespace rola
 			*it = std::move(v.back());
 			v.pop_back();
 		}
+	}
+
+	template <typename T>
+	void insert_sorted(std::vector<T>& v, T const& val)
+	{
+		if (std::is_sorted(std::begin(v), std::end(v)))
+		{
+			const auto insert_pos = std::lower_bound(std::begin(v), std::end(v), val);
+			v.insert(insert_pos, val);
+		}
+		else
+		{
+			v.insert(val);
+		}		
 	}
 } // namespace rola
 
