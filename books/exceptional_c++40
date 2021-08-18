@@ -1,0 +1,2 @@
+
+1. 了解size()和capacity()之间的区别，了解operator[]()跟at()之间的区别。

@@ -1,2 +1,2 @@
 # rola
-C++ code
+C++ code collected used CMake
