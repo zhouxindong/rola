@@ -29,10 +29,10 @@ namespace rola
 	{
 	protected:
 		std::deque<char> data;
-		Easy_signal<void(std::vector<char>)> matched;
+		Easy_signal<void(std::vector<char>&)> matched;
 
 	public:
-		Easy_signal<void(std::vector<char>)>& matched_signal()
+		Easy_signal<void(std::vector<char>&)>& matched_signal()
 		{
 			return matched;
 		}
@@ -82,7 +82,7 @@ namespace rola
 				data.pop_front();
 			}
 
-			matched.emit_(std::move(v));
+			matched.emit_(/*std::move(v)*/v);
 
 			process_();
 		}

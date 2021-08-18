@@ -33,9 +33,12 @@ set (SRC_FILES ${SRC_FILES} "heart_beater_main.cpp")
 set (HDR_FILES ${HDR_FILES} "tcp_file_server.hpp")
 set (SRC_FILES ${SRC_FILES} "tcp_file_server_main.cpp")
 set (HDR_FILES ${HDR_FILES} "file_server_protocol.hpp")
+set (SRC_FILES ${SRC_FILES} "file_server_protocol_main.cpp")
+set (HDR_FILES ${HDR_FILES} "tcp_file_client.hpp")
+set (SRC_FILES ${SRC_FILES} "tcp_file_client_main.cpp")
 
 # Add source to this project's executable.
-add_executable (easy_socket2 ${HDR_FILES} ${SRC_FILES})
+add_executable (easy_socket2 ${HDR_FILES} ${SRC_FILES} )
 
 target_include_directories(
 	easy_socket2

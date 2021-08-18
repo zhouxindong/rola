@@ -336,12 +336,12 @@ namespace rola
 			return connected_;
 		}
 
-		void log(log_item_type const& item, bool fls = true) noexcept override
+		void log(LogItem const& item, bool fls = true) noexcept override
 		{
 			if (!ready())
 				return;
 
-			stream() << log_formatter_type::format(item);
+			stream() << LogFormatter::format(item);
 			if (fls)
 				flush();
 

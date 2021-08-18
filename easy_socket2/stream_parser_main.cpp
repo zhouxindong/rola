@@ -82,7 +82,7 @@ int main_streamparser()
 
 	// 3. head_tail stream
 	rola::head_tail_stream<> head_tail({ 1,2,3,4 }, { 4,3,2,1 });
-	head_tail.matched_signal().connect([](std::vector<char> v) {
+	head_tail.matched_signal().connect([](std::vector<char>& v) {
 	std::cout << "received len: " << std::dec << v.size() << "\n";
 	for (auto i : v)
 	{

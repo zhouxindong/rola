@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
+#include <ostream>
 
 #if defined(_WIN32)
 # include <windows.h>
@@ -102,6 +103,15 @@ namespace rola
         std::vector<std::string>& paths()
         {
             return m_path;
+        }
+
+        path& replace(const size_t index, const std::string& newpath)
+        {
+            if (index >= m_path.size())
+                return *this;
+
+            m_path[index] = newpath;
+            return *this;
         }
 
         path make_absolute() const {
@@ -611,6 +621,15 @@ namespace rola
 		}
 		return true;
 #endif
+    }
+
+    inline void create_file(const std::string& filepath)
+    {
+		std::ofstream fout(filepath, std::ios::trunc | std::ios::binary);
+		if (!fout.is_open())
+			return;
+
+        fout.close();
     }
 
 #if defined(unix)

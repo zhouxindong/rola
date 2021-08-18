@@ -23,9 +23,11 @@ namespace rola
 			: handle_(h)
 		{}
 
+		// no copyable
 		socket2(const socket2&) = delete;
 		socket2& operator=(const socket2&) = delete;
 
+		// can movable
 		socket2(socket2&& rhs) noexcept
 			: handle_{ rhs.handle_ }
 		{
@@ -270,6 +272,12 @@ namespace rola
 			return ::accept(handle_, (sockaddr*)peer, &peerlen);
 		}
 
+		bool connect(sockaddr_in* peer)
+		{
+			return ::connect(handle_, reinterpret_cast<const sockaddr*>(peer),
+				sizeof(sockaddr_in)) == 0;
+		}
+
 	public:
 		static void close(socket_t s)
 		{
@@ -326,6 +334,12 @@ namespace rola
 		inline result_t send(socket_t sock, const std::string& s)
 		{
 			return send_n(sock, s.data(), static_cast<iolen_t>(s.size()));
+		}
+
+		inline bool send_force(socket_t sock, const std::string& s)
+		{
+			auto str_size = s.size();
+			return send_n(sock, s.data(), static_cast<iolen_t>(str_size)) == str_size;
 		}
 
 		inline result_t recv(socket_t s, void* buf, iolen_t n) noexcept
@@ -405,6 +419,17 @@ namespace rola
 #endif
 		}
 
+		inline result_t send_to(socket_t s, const std::string& str, const sockaddr_in* addr) noexcept
+		{
+#if defined(_WIN32)
+			return ::sendto(s, reinterpret_cast<const char*>(str.data()), static_cast<int>(str.size()), 0,
+				reinterpret_cast<const sockaddr*>(addr), static_cast<socklen_t>(sizeof(*addr)));
+#else
+			return ::sendto(s, str.data(), str.size(), 0,
+				reinterpret_cast<const sockaddr*>(addr), static_cast<socklen_t>(sizeof(*addr)));
+#endif
+		}
+
 		inline result_t recv_from(socket_t s, void* buf, iolen_t n, sockaddr_in* addr = nullptr) noexcept
 		{
 			sockaddr* p = addr ? reinterpret_cast<sockaddr*>(addr) : nullptr;
@@ -422,17 +447,17 @@ namespace rola
 	inline size_t send_file(const char* file_path, socket_t sock)
 	{
 #if defined(_WIN32)
-		HANDLE hFile = ::CreateFile(file_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
+		HANDLE hFile = ::CreateFileA(file_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
 		if (hFile == INVALID_HANDLE_VALUE)
-			return -1;
+			return 0;
 
 		LARGE_INTEGER liFileSize;
 		if (::GetFileSizeEx(hFile, &liFileSize) == FALSE)
-			return -1;
+			return 0;
 
 		if (::TransmitFile(sock, hFile, 0, 0, NULL, NULL, TF_USE_DEFAULT_WORKER) == FALSE)
 		{
-			return -1;
+			return 0;
 		}
 
 		::CloseHandle(hFile);
@@ -441,26 +466,26 @@ namespace rola
 #else
 		struct stat file_stat;
 		if (::stat(file_path, &file_stat) < 0)
-			return -1;
+			return 0;
 		if (S_ISREG(file_stat.st_mode))
 		{
 			int fd;
 			if ((fd = ::open(file_path, O_RDONLY)) < 0)
-				return -1;
+				return 0;
 
 			if (sendfile(sock, fd, 0, file_stat.st_size) != file_stat.st_size)
 			{
 				::close(fd);
-				return -1;
+				return 0;
 			}
 			::close(fd);
 			return file_stat.st_size;
 		}
-		return -1;
+		return 0;
 #endif
 	}
 
-	static constexpr int BUF_SIZE = 65536;
+	static constexpr int BUF_SIZE = 4096;
 
 	inline bool recv_file(const char* file_path, size_t file_size, socket_t sock)
 	{

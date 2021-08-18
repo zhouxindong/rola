@@ -167,7 +167,7 @@ namespace rola
 		}
 
 		template <typename CharT>
-		inline std::vector<tstring<CharT>> split(tstring<CharT> text, CharT const delimiter)
+		inline std::vector<tstring<CharT>> split2(tstring<CharT> text, CharT const delimiter)
 		{
 			auto sstr = tstringstream<CharT>{ text };
 			auto tokens = std::vector<tstring<CharT>>{};

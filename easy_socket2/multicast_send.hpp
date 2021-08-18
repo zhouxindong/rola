@@ -31,6 +31,11 @@ namespace rola
 			return detail::send_to(this->handle(), buf, n, &mul_addr_);
 		}
 
+		result_t write(const std::string& str) noexcept
+		{
+			return detail::send_to(this->handle(), str, &mul_addr_);
+		}
+
 	private:
 		void pre_build(int ttl)
 		{

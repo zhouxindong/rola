@@ -2,7 +2,7 @@
 #include "multicast_recv.hpp"
 #include "socket_init.hpp"
 
-int main_multicastrecv()
+int main()
 {
 	rola::socket_init sock_init;
 	rola::multicast_recv mul_recv("224.1.2.3", 8899);

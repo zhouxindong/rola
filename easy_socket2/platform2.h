@@ -43,6 +43,10 @@ using iolen_t = int;
 #define SHUT_WR SD_SEND
 #define SHUT_RDWR SD_BOTH
 
+#ifndef INVALID_SOCKET
+#define INVALID_SOCKET -1
+#endif // !INVALID_SOCKET
+
 #else
 #include <unistd.h>
 #include <sys/socket.h>
@@ -64,11 +68,9 @@ using socket_t = int;
 using result_t = ssize_t;
 using iolen_t = size_t;
 
-#endif
+static constexpr int INVALID_SOCKET = -1;
 
-#ifndef INVALID_SOCKET
-#define INVALID_SOCKET -1
-#endif // !INVALID_SOCKET
+#endif
 
 #define NLISTEN			1	// listen backlog
 #define ACCEPT_WAIT		1	// unit: ms
@@ -107,6 +109,18 @@ inline timeval to_timeval(const std::chrono::microseconds& dur)
 template<class Rep, class Period>
 timeval to_timeval(const std::chrono::duration<Rep, Period>& dur) {
 	return to_timeval(std::chrono::duration_cast<std::chrono::microseconds>(dur));
+}
+
+inline std::string sockaddrin2str(const sockaddr_in& addr)
+{
+	char buf[INET_ADDRSTRLEN];
+#if (defined _WIN32) && (defined __GNUC__) // MinGW not defined inet_ntop()
+	return std::string("<unknown>") + ":" + std::to_string(unsigned(port()));
+#else
+	auto str = inet_ntop(AF_INET, (void*)&(addr.sin_addr), buf, INET_ADDRSTRLEN);
+	return std::string(str ? str : "<unknown>")
+		+ ":" + std::to_string(unsigned(ntohs(addr.sin_port)));
+#endif
 }
 #endif // ROLA_EASY_SOCKET2_PLATFORM2_H
 

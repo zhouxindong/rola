@@ -14,10 +14,12 @@ int main_mulsend()
 	{
 		mul_send.write("hello", 6);
 		std::cout << "count: " << ++count << "\n";
+		if (count > 5)
+			break;
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
-	mul_send.write("hello", 6);
+	mul_send.write("hellooooooooooooooo");
 
 	std::cout << "multicast send successful\n";
 	return 0;
