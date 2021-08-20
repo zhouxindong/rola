@@ -40,7 +40,7 @@ namespace rola
 		/// ysp download path: /PATH_ROOT/UPDATEDOWN
 		/// ysp_version.ini : nfsroot, update3559|3531
 		/// </summary>
-		static const std::string PATH_ROOT{ "tmpp" };
+		static const std::string PATH_ROOT{ "tmp" };
 		static const std::string PATH_NFSROOT{ "nfsroot" };
 		static const std::string PATH_UPDATE3559{ "update3559" };
 		static const std::string PATH_UPDATE3531{ "update3531" };
@@ -198,7 +198,9 @@ namespace rola
 	{
 		Terminal3559,
 		Terminal3531,
-		SmallHost
+		SmallHost,
+		SmallHost3559,
+		SmallHost3531,
 	};
 } // namespace rola
 

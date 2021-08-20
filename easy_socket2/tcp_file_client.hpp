@@ -240,7 +240,7 @@ namespace rola
 #if defined(_WIN32)
 #else
 				std::ostringstream oss;
-				oss << "chmod " << tokens[2] << " " << new_filepath;
+				oss << "chmod " << tokens[2] << " " << '"' << new_filepath << '"';
 				system(oss.str().c_str());
 #endif
 			}
@@ -287,6 +287,14 @@ namespace rola
 
 			case rola::file_client_type::SmallHost:
 				start_3559(false);
+				start_3531(false);
+				break;
+
+			case rola::file_client_type::SmallHost3559:
+				start_3559(false);
+				break;
+
+			case rola::file_client_type::SmallHost3531:
 				start_3531(false);
 				break;
 
