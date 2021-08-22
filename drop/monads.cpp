@@ -111,7 +111,7 @@ std::vector<std::optional<std::string>> get_strings(std::vector<int> const& v)
 	return map<int, std::optional<std::string>>(f3, v); // vector<int> -> vector<std::optional<std::string>>
 }
 
-int main()
+int main_monads()
 {
 	std::vector<int> v{ 1,2,3,4,5 };
 	std::cout << get_strings(v);

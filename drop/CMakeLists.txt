@@ -31,9 +31,11 @@ set (SRC_FILES ${SRC_FILES} "memory.cpp")
 set (HDR_FILES ${HDR_FILES} "template.h")
 set (HDR_FILES ${HDR_FILES} "header.h")
 set (SRC_FILES ${SRC_FILES} "promise.cpp")
+set (HDR_FILES ${HDR_FILES} "lambdas.h")
+set (SRC_FILES ${SRC_FILES} "lambdas_main.cpp")
 
 # Add source to this project's executable.
-add_executable (drop ${HDR_FILES} ${SRC_FILES})
+add_executable (drop ${HDR_FILES} ${SRC_FILES} )
 
 add_subdirectory ("trick")
 set_property(TARGET drop PROPERTY CXX_STANDARD 17)
