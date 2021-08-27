@@ -11,6 +11,7 @@
 #include <cerrno>
 #include <cstring>
 #include <ostream>
+#include <fstream>
 
 #if defined(_WIN32)
 # include <windows.h>

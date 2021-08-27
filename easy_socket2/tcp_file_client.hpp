@@ -278,24 +278,24 @@ namespace rola
 			switch (client_type_)
 			{
 			case rola::file_client_type::Terminal3559:
-				start_3559(true);
+				start_update(detail::PATH_UPDATE3559, conf::SERVER_PORT_3559, true);
 				break;
 
 			case rola::file_client_type::Terminal3531:
-				start_3531(true);
+				start_update(detail::PATH_UPDATE3531, conf::SERVER_PORT_3531, true);
 				break;
 
 			case rola::file_client_type::SmallHost:
-				start_3559(false);
-				start_3531(false);
+				start_update(detail::PATH_UPDATE3559, conf::SERVER_PORT_3559, false);
+				start_update(detail::PATH_UPDATE3531, conf::SERVER_PORT_3531, false);
 				break;
 
 			case rola::file_client_type::SmallHost3559:
-				start_3559(false);
+				start_update(detail::PATH_UPDATE3559, conf::SERVER_PORT_3559, false);
 				break;
 
 			case rola::file_client_type::SmallHost3531:
-				start_3531(false);
+				start_update(detail::PATH_UPDATE3531, conf::SERVER_PORT_3531, false);
 				break;
 
 			default:
@@ -304,36 +304,23 @@ namespace rola
 		}
 
 	private:
-		void start_3559(bool del_download)
+		void start_update(const std::string& update_path, short update_port, bool del_download)
 		{
-			auto success = start_download(conf::SERVER_PORT_3559);
-			if (success)
-			{
-				make_nfsroot_exists();
-				copy_download(detail::PATH_UPDATE3559);
-				if (del_download) remove_download(detail::PATH_UPDATE3559);
-			}
-			else
-			{
-				remove_download(detail::PATH_UPDATE3559);
-			}
-		}
+			remove_download(update_path);
 
-		void start_3531(bool del_download)
-		{
-			auto success = start_download(conf::SERVER_PORT_3531);
+			auto success = start_download(update_port);
 			if (success)
-			{
+			{			
 				if (del_download)
 				{
 					make_nfsroot_exists();
-					copy_download(detail::PATH_UPDATE3531);
-					remove_download(detail::PATH_UPDATE3531);
+					copy_download(update_path);
+					remove_download(update_path);
 				}
 			}
 			else
 			{
-				remove_download(detail::PATH_UPDATE3531);
+				remove_download(update_path);
 			}
 		}
 
@@ -359,34 +346,6 @@ namespace rola
 				detail::file_recv_state* filerecv = dynamic_cast<detail::file_recv_state*>(state_.get());
 				return filerecv != nullptr ? filerecv->update_success() : false;
 			}
-		}
-
-	private:
-		void make_nfsroot_exists()
-		{
-			system("cd");
-			std::ostringstream oss;
-			oss << '/' << detail::PATH_ROOT << '/' << detail::PATH_NFSROOT;
-			rola::path path_nfs(oss.str());
-			if (!path_nfs.exists())
-				create_directories(path_nfs);
-		}
-
-		void copy_download(const std::string& src_path)
-		{
-			system("cd");
-			std::ostringstream oss;
-			oss << "cp -rf /" << detail::PATH_ROOT << '/' << src_path << "/* /"
-				<< detail::PATH_ROOT << '/' << detail::PATH_NFSROOT;
-			system(oss.str().c_str());
-		}
-
-		void remove_download(const std::string& down_path)
-		{
-			system("cd");
-			std::ostringstream oss;
-			oss << "rm -rf /" << detail::PATH_ROOT << '/' << down_path;
-			system(oss.str().c_str());
 		}
 
 	private:

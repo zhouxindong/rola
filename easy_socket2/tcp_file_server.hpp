@@ -11,10 +11,9 @@
 
 #include "easy_socket2/socket2.hpp"
 #include "easy_socket2/file_server_protocol.hpp"
-#include "utils/path.hpp"
 #include "easy_log/gcc_compose_logger.hpp"
 #include "easy_socket2/socket_init.hpp"
-#include "easy_socket2/multicast_send.hpp"
+#include "easy_socket2/udp_server.hpp"
 
 // file transfer server
 namespace rola
@@ -344,11 +343,8 @@ namespace rola
 	class updater_server
 	{
 	public:
-		updater_server(file_server_type server_type) noexcept(false)
-			: version_send_(
-				server_type == file_server_type::Master ? rola::conf::VERSION_MASTER_ADDR : rola::conf::VERSION_SMALL_ADDR
-				, server_type == file_server_type::Master ? rola::conf::VERSION_MASTER_PORT : rola::conf::VERSION_SMALL_PORT)
-			, logger_{ com_logger("file_server") }
+		updater_server() noexcept(false)
+			: logger_{ com_logger("file_server") }
 		{
 			logger_.log(LOG(TRACE) << "updater_server ctor start...");
 
@@ -364,7 +360,7 @@ namespace rola
 			{
 				logger_.log(LOG(TRACE) << "ready to start version broadcast thread");
 				broad_version_thread_ = std::thread([this]() {
-					this->broad_version_thread_proc();
+					this->broad_version_thread_proc(this->local_ip_);
 					});
 
 				logger_.log(LOG(TRACE) << "ready to start file server for update 3559");
@@ -399,25 +395,57 @@ namespace rola
 			logger_.log(LOG(TRACE) << "finished to quit updater server");
 		}
 
-		void enable_broad(bool val)
+		void set_paused(bool paused)
 		{
-			enable_.store(val);
+			paused_.store(paused);
+		}
+
+		bool get_paused() const
+		{
+			return paused_.load();
 		}
 
 	private:
-		void broad_version_thread_proc()
+		void broad_version_thread_proc(std::string local_ip)
 		{
-			std::ostringstream oss;
-			while (true)
-			{
-				if (enable_.load())
-				{
-					oss.str("");
-					oss << local_ip_ << '|' << "3559:" << detail::get_version3559() << '|' << "3531:" << detail::get_version3531();
-					version_send_.write(oss.str());
-				}
+			rola::udp_server user(local_ip.c_str(), rola::conf::VERSION_MASTER_PORT);
+			user.set_non_blocking();
 
-				std::this_thread::sleep_for(std::chrono::seconds(rola::conf::VERSION_INTERVAL));
+			user.start([this](rola::unconnected_socket sock) {
+				struct sockaddr_in peer;
+				std::ostringstream oss;
+				char buf[512];
+
+				for (;;)
+				{
+					result_t rc = sock.read_from(buf, sizeof(buf), &peer);
+					if (rc > 0 && !this->get_paused())
+					{
+						oss.str("");
+						oss << "3559:" << detail::get_version3559() << '|' << "3531:" << detail::get_version3531();
+						std::string ver_str = oss.str();
+						sock.write_to(ver_str.c_str(), ver_str.size(), &peer);
+					}
+
+					if (!this->get_paused())
+						check_update_self();
+
+					std::this_thread::sleep_for(std::chrono::seconds(1));
+				}
+				});
+		}
+
+		void check_update_self()
+		{
+			auto ver_3559 = detail::get_version3559();
+			if (ver_3559 == "---")
+				return;
+
+			auto ver_nfs = detail::get_version_nfs();
+			if (ver_nfs != ver_3559)
+			{
+				make_nfsroot_exists();
+				copy_download(detail::PATH_UPDATE3559);
 			}
 		}
 
@@ -426,14 +454,13 @@ namespace rola
 		std::thread broad_version_thread_;
 		std::thread file_server3559_thread_;
 		std::thread file_server3531_thread_;
-		rola::multicast_send version_send_;
 
 	private:
 		rola::socket_init sock_init;
 		rola::compose_logger_t& logger_;
 
 	private:
-		std::atomic<bool> enable_{ true };
+		std::atomic<bool> paused_{ false };
 	};
 } // namespace rola
 

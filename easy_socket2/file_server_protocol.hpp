@@ -14,6 +14,7 @@
 
 #include "utils/easy_ini.hpp"
 #include "stlex/string.hpp"
+#include "utils/path.hpp"
 
 namespace rola
 {
@@ -127,6 +128,33 @@ namespace rola
 		ret.append(detail::file_ctrl_protocol_tail().begin(), detail::file_ctrl_protocol_tail().end());
 
 		return ret;
+	}
+
+	inline void make_nfsroot_exists()
+	{
+		system("cd");
+		std::ostringstream oss;
+		oss << '/' << detail::PATH_ROOT << '/' << detail::PATH_NFSROOT;
+		rola::path path_nfs(oss.str());
+		if (!path_nfs.exists())
+			create_directories(path_nfs);
+	}
+
+	inline void copy_download(const std::string& src_path)
+	{
+		system("cd");
+		std::ostringstream oss;
+		oss << "cp -rf /" << detail::PATH_ROOT << '/' << src_path << "/* /"
+			<< detail::PATH_ROOT << '/' << detail::PATH_NFSROOT;
+		system(oss.str().c_str());
+	}
+
+	inline void remove_download(const std::string& down_path)
+	{
+		system("cd");
+		std::ostringstream oss;
+		oss << "rm -rf /" << detail::PATH_ROOT << '/' << down_path;
+		system(oss.str().c_str());
 	}
 } // namespace rola
 
